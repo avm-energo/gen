@@ -321,30 +321,6 @@ QByteArray StdFunc::compress(const QByteArray &data)
     return header + compressedData + footer;
 }
 
-bool StdFunc::checkArchiveExist(const QString &path)
-{
-    // rotating
-    for (int i = 9; i > 0; --i)
-    {
-        QString tmpsnew = path + "." + QString::number(i) + ".gz";
-        QString tmpsold = path + "." + QString::number(i - 1) + ".gz";
-        QFile fn;
-        fn.setFileName(tmpsnew);
-        if (fn.exists())
-            fn.remove();
-        fn.setFileName(tmpsold);
-        if (fn.exists())
-        {
-            if (fn.rename(tmpsnew) == false) // error
-            {
-                ERMSG("Cannot rename file");
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 void StdFunc::removeSubstr(std::string &str, std::string &substr)
 {
     std::string::size_type n = substr.length();

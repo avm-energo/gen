@@ -1,8 +1,8 @@
 #include "board.h"
 
-#include "../gen/modules.h"
-#include "../gen/registers.h"
 #include "error.h"
+#include "modules.h"
+#include "registers.h"
 #include "stdfunc.h"
 
 #include <QDebug>

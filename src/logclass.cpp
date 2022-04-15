@@ -106,7 +106,7 @@ void LogClass::CheckAndCompress()
     QString GZippedLogFile = LogFile;
     if (fp->size() < LOG_MAX_SIZE)
         return;
-    if (!StdFunc::checkArchiveExist(GZippedLogFile))
+    if (!StdFunc::rotateGzipLogs(GZippedLogFile))
         return;
     GZippedLogFile += ".0.gz";
 

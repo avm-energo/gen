@@ -3,8 +3,8 @@
 #define DEVICETYPE_MODULE 1 // модуль
 #define DEVICETYPE_DEVICE 2 // прибор
 
-#include "../gen/modules.h"
 #include "datatypes.h"
+#include "modules.h"
 #include "singleton.h"
 
 class Board : public QObject, public Singleton<Board>

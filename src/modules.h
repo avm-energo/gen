@@ -1,5 +1,5 @@
 #pragma once
-#include "../gen/pch.h"
+#include "pch.h"
 
 #include <QMap>
 

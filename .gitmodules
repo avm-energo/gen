@@ -1,0 +1,4 @@
+[submodule "include/xz"]
+	path = include/xz
+	url = https://git.tukaani.org/xz.git
+	branch = master

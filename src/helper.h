@@ -1,6 +1,5 @@
 #pragma once
-#include "../gen/datatypes.h"
-///#include "../interfaces/interfacesettings.h"
+#include "datatypes.h"
 
 #include <QDebug>
 #include <bitset>

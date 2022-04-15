@@ -1,6 +1,6 @@
 #ifndef FILES_H
 #define FILES_H
-#include "../gen/error.h"
+#include "../error.h"
 
 #include <QString>
 
@@ -17,6 +17,8 @@ public:
     static QStringList Drives();
     static QStringList SearchForFile(QStringList &di, const QString &filename, bool subdirs = false);
     static QString GetFirstDriveWithLabel(QStringList &filepaths, const QString &label);
+    static QByteArray XZCompress(QByteArray &ba);
+    //    static QByteArray XZDecompress(QByteArray &ba);
 };
 
 #endif // FILES_H

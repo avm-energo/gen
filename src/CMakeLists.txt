@@ -2,7 +2,15 @@ cmake_minimum_required(VERSION 3.14)
 
 project(gen LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty")
 
 find_package(
   QT NAMES Qt6 Qt5
@@ -12,6 +20,9 @@ find_package(
   Qt${QT_VERSION_MAJOR}
   COMPONENTS Core Network Xml
   REQUIRED)
+
+include(ExternalProject)
+include(xz)
 
 add_library(
   gen STATIC
@@ -29,8 +40,6 @@ add_library(
   error.h
   error.cpp
   errorqueue.cpp
-  files.cpp
-  files.h
   helper.cpp
   helper.h
   logclass.cpp
@@ -53,7 +62,15 @@ add_library(
   std_ext.h
   s2.cpp
   configv.cpp
-  configv.h)
+  configv.h
+  delegate_check.h
+  delegate_widget.h
+  ctti/type_id.hpp
+  files/files.cpp
+  files/files.h
+  files/xz.cpp
+  files/xz.h
+  )
 
 target_link_libraries(
   gen

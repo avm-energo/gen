@@ -73,7 +73,7 @@ public:
         list.append(item);
     }
     static QByteArray compress(const QByteArray &data);
-    static bool checkArchiveExist(const QString &path);
+    static bool rotateGzipLogs(const QString &path);
 
     static void removeSubstr(std::string &str, std::string &substr);
 
