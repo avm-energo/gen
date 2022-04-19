@@ -132,7 +132,7 @@ QByteArray Files::XZCompress(QByteArray &ba)
             if (ba.isEmpty())
                 action = LZMA_FINISH;
         }
-        lzma_ret ret = lzma_code(&strm, action);
+        ret = lzma_code(&strm, action);
         if ((strm.avail_out == 0) || (ret == LZMA_STREAM_END))
         {
             // When lzma_code() has returned LZMA_STREAM_END,
@@ -140,7 +140,7 @@ QByteArray Files::XZCompress(QByteArray &ba)
             // full. Calculate how much new data there is to
             // be written to the output file.
             size_t write_size = outbufba.size() - strm.avail_out;
-            outbufba.resize(write_size);
+            outbufba.resize(static_cast<int>(write_size));
             outba.append(outbufba);
             strm.next_out = reinterpret_cast<uint8_t *>(outbufba.data());
             outbufba.resize(BUFSIZ);

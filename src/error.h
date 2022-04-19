@@ -45,7 +45,6 @@ enum Msg
     FileOpenError,
     FileWriteError,
     UnknownError = 0xff
-
 };
 
 const QMap<Msg, QString> MsgStr { { ResEmpty, "Пустой результат" }, { GeneralError, "Ошибка" }, { NoError, "Успешно" },

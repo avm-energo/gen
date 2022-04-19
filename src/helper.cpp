@@ -1,9 +1,9 @@
 #include "helper.h"
 
-#include "../interfaces/usbhidportinfo.h"
-#ifdef QT_GUI_LIB
-#include "../models/errorprotocolitem.h"
-#endif
+//#include "settings/usbhidportinfo.h"
+//#ifdef QT_GUI_LIB
+//#include "../models/errorprotocolitem.h"
+//#endif
 #include "timefunc.h"
 QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st)
 {
@@ -71,27 +71,28 @@ QDebug operator<<(QDebug debug, const S2DataTypes::OscInfo &st)
     return debug.maybeSpace();
 }
 
-QDebug operator<<(QDebug debug, const UsbHidSettings &settings)
-{
-    debug.nospace() << QString::number(settings.vendor_id, 16) << ":" << QString::number(settings.product_id, 16) << ":"
-                    << settings.serial;
-#ifdef QT_DEBUG
-    debug.nospace() << ":" << settings.path;
-#endif
-    return debug.maybeSpace();
-}
-#ifdef QT_GUI_LIB
-QDebug operator<<(QDebug debug, const ErrorProtocolItem &item)
-{
-    const auto &values = item.constData();
-    for (const auto i : *values)
-        debug.nospace() << *i << ":";
-    return debug.maybeSpace();
-}
+// QDebug operator<<(QDebug debug, const UsbHidSettings &settings)
+//{
+//    debug.nospace() << QString::number(settings.vendor_id, 16) << ":" << QString::number(settings.product_id, 16) <<
+//    ":"
+//                    << settings.serial;
+//#ifdef QT_DEBUG
+//    debug.nospace() << ":" << settings.path;
+//#endif
+//    return debug.maybeSpace();
+//}
+//#ifdef QT_GUI_LIB
+// QDebug operator<<(QDebug debug, const ErrorProtocolItem &item)
+//{
+//    const auto &values = item.constData();
+//    for (const auto i : *values)
+//        debug.nospace() << *i << ":";
+//    return debug.maybeSpace();
+//}
 
-QDebug operator<<(QDebug debug, const ETableItemData &item)
-{
-    debug.nospace() << item.value << ":" << item.role;
-    return debug.maybeSpace();
-}
-#endif
+// QDebug operator<<(QDebug debug, const ETableItemData &item)
+//{
+//    debug.nospace() << item.value << ":" << item.role;
+//    return debug.maybeSpace();
+//}
+//#endif
