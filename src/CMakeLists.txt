@@ -72,9 +72,6 @@ else()
     #TODO make the same as msvc
 endif()
 
-string(APPEND CMAKE_CXX_FLAGS_DEBUG " -fno-omit-frame-pointer -fstack-protector")
-string(APPEND CMAKE_LINKER_FLAGS_DEBUG " -fno-omit-frame-pointer -fstack-protector")
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS             ON)
 
 message(STATUS "Cached target arch: " ${CACHED_PROJECT_TARGET_NAME})
@@ -137,60 +134,21 @@ message(STATUS "CUSTOM_TARGET_GENERATOR: " ${CUSTOM_TARGET_GENERATOR})
 
 include(xz)
 
+#------------------------------------------------------------------------------
+# Target
+#------------------------------------------------------------------------------
+# Define target sources
+file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
+
 add_library(
   gen STATIC
-  board.cpp
-  board.h
-  colors.h
-  stdfunc.h
-  s2.h
-  s2helper.h
-  datamanager.h
-  datarecv.h
-  datarecv.cpp
-  datatypes.h
-  error.h
-  error.cpp
-  errorqueue.cpp
-  helper.cpp
-  helper.h
-  logclass.cpp
-  logclass.h
-  logger.h
-  logger.cpp
-  pch.h
-  uint24.h
-  singleton.h
-  timefunc.h
-  timefunc.cpp
-  datamanager.cpp
-  stdfunc.cpp
-  modules.h
-  registers.h
-  errorqueue.h
-  std_ext.h
-  s2.cpp
-  configv.cpp
-  configv.h
-  delegate_check.h
-  delegate_widget.h
-  ctti/type_id.hpp
-  files/files.cpp
-  files/files.h
-  files/xz.cpp
-  files/xz.h
-  settings/settings.h
-  settings/usbhidsettings.h
-  settings/usbhidsettings.cpp
-  settings/interfacesettings.h
-  settings/modbusprivate.cpp
-  settings/modbusprivate.h
-  settings/iec104private.h
-  settings/protocomprivate.h
-  xmlparse/xmlparser.cpp
-  xmlparse/xmlparser.h
-  xmlparse/interfaceparser.h
   )
+
+
+target_sources(gen PRIVATE
+  ${files_cpp} ${files_h}
+)
 
 target_link_libraries(
   gen
@@ -201,3 +159,7 @@ target_link_libraries(
   )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIBRARY)
+
+install(TARGETS gen EXPORT GenTargets)
+install(EXPORT GenTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/gen/cmake)
+install(FILES ${files_h} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gen)

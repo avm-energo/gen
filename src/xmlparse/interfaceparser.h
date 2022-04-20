@@ -1,5 +1,5 @@
-#ifndef BASEINTERFACE_H
-#define BASEINTERFACE_H
+#ifndef INTERFACEPARSER_H
+#define INTERFACEPARSER_H
 #include "../datatypes.h"
 #include "../settings/interfacesettings.h"
 #include "../settings/settings.h"
@@ -49,4 +49,4 @@ public:
     virtual InterfaceSettings parseSettings(QDomElement domElement) const = 0;
 };
 
-#endif // BASEINTERFACE_H
+#endif // INTERFACEPARSER_H
