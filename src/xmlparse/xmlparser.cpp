@@ -4,10 +4,10 @@
 #include "../settings/modbussettings.h"
 #include "../settings/protocomsettings.h"
 #include "../settings/settings.h"
-#include "board.h"
+#include "../board.h"
 #include "interfaceparser.h"
-#include "std_ext.h"
-#include "stdfunc.h"
+#include "../std_ext.h"
+#include "../stdfunc.h"
 
 #include <QtDebug>
 

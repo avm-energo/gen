@@ -1,7 +1,7 @@
 #pragma once
 
-#include "datatypes.h"
-#include "settings/settings.h"
+#include "../datatypes.h"
+#include "../settings/settings.h"
 
 #include <QDomElement>
 #include <QObject>
