@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(gen)
+project(gen
+    DESCRIPTION "gen"
+    VERSION 1.0.0
+    )
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,55 +16,17 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty")
 
+include(GNUInstallDirs)
 include(DetermineTargetArchitecture)
+include(SetProjectTargetName)
+include(ExternalProject)
+
 target_architecture(PROJECT_ARCHITECTURE)
+set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
+
 message(STATUS "MSVC_C_ARCHITECTURE_ID: " ${MSVC_C_ARCHITECTURE_ID})
-
-message(STATUS "Target architecture - ${PROJECT_ARCHITECTURE}")
-
-if(CMAKE_SYSTEM_NAME_LOWER STREQUAL "windows")
-  message(STATUS "Windows")
-  ADD_DEFINITIONS(-DUNICODE)
-  ADD_DEFINITIONS(-D_UNICODE)
-  if (NOT USER_DIRECTORY)
-    set(USER_DIRECTORY $ENV{USERPROFILE})
-  endif()
-  if(${PROJECT_ARCHITECTURE}} MATCHES "x86_64")
-    set(PROJECT_TARGET_NAME "win64")
-  elseif(${PROJECT_ARCHITECTURE}} MATCHES "i386")
-    set(PROJECT_TARGET_NAME "win32")
-  else()
-    message(FATAL_ERROR "Invalid arch name: ${PROJECT_ARCHITECTURE}")
-  endif()
-elseif(CMAKE_SYSTEM_NAME_LOWER STREQUAL "linux")
-  message(STATUS "Linux")
-
-  if (NOT USER_DIRECTORY)
-    set(USER_DIRECTORY $ENV{HOME})
-  endif()
-
-  if(${PROJECT_ARCHITECTURE}} MATCHES "x86_64")
-    set(PROJECT_TARGET_NAME "linux64")
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE amd64)
-  elseif(${PROJECT_ARCHITECTURE}} MATCHES "i386")
-    set(PROJECT_TARGET_NAME "linux32")
-  elseif(${PROJECT_ARCHITECTURE}} MATCHES "armv7")
-    set(PROJECT_TARGET_NAME "linux-armhf")
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE armhf)
-  else()
-    message(FATAL_ERROR "Invalid arch name: ${PROJECT_ARCHITECTURE}")
-  endif()
-
-elseif(CMAKE_SYSTEM_NAME_LOWER STREQUAL "unix")
-  message(STATUS "Unix")
-  if(${PROJECT_ARCHITECTURE}} MATCHES "x86_64")
-    set(PROJECT_TARGET_NAME "unix64")
-  elseif(${PROJECT_ARCHITECTURE}} MATCHES "i386")
-    set(PROJECT_TARGET_NAME "unix32")
-  else()
-    message(FATAL_ERROR "Invalid arch name: ${PROJECT_ARCHITECTURE}")
-  endif()
-endif()
+message(STATUS "Target architecture: ${PROJECT_ARCHITECTURE}")
+message(STATUS "Target name: ${PROJECT_TARGET_NAME}")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
@@ -77,15 +42,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS             ON)
 message(STATUS "Cached target arch: " ${CACHED_PROJECT_TARGET_NAME})
 message(STATUS "Current target arch: " ${PROJECT_TARGET_NAME})
 message(STATUS "Sysroot: " ${CMAKE_SYSROOT})
+
 if(NOT DEFINED CACHED_PROJECT_TARGET_NAME)
     set(CACHED_PROJECT_TARGET_NAME "dummy")
 endif()
 
-string(REPLACE ";" "  " _pathNamesSpaces "${CMAKE_MODULE_PATH}")
-message(STATUS "Modules dir: " "${_pathNamesSpaces}")
-
 message(STATUS "${CMAKE_BUILD_TYPE_LOWER} mode")
-message(STATUS "Target name - ${PROJECT_TARGET_NAME}")
 
 find_package(
   QT NAMES Qt6 Qt5
@@ -106,16 +68,11 @@ else()
   set(MODE_DIR Release)
 endif(CMAKE_BUILD_TYPE EQUAL "DEBUG")
 
-include(CheckIncludeFile)
-include(CheckIncludeFileCXX)
-include(CheckIncludeFiles)
-include(ExternalProject)
-
 message(STATUS "CMAKE_GENERATOR: " ${CMAKE_GENERATOR})
 
-if(${PROJECT_ARCHITECTURE}} MATCHES "x86_64")
+if(${PROJECT_ARCHITECTURE} MATCHES "x86_64")
   set(WINDOWS_TARGET_NAME "x64")
-elseif(${PROJECT_ARCHITECTURE}} MATCHES "i386")
+elseif(${PROJECT_ARCHITECTURE} MATCHES "i386")
   set(WINDOWS_TARGET_NAME "Win32")
 else()
   message(FATAL_ERROR "Invalid arch name: ${PROJECT_ARCHITECTURE}")
@@ -142,16 +99,54 @@ file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
 
 add_library(
-  gen STATIC
+  ${PROJECT_NAME} STATIC
   )
 
+set(public_headers
+    files/files.h
+    files/xz.h
+    settings/iec104settings.h
+    settings/interfacesettings.h
+    settings/modbussettings.h
+    settings/protocomsettings.h
+    settings/settings.h
+    settings/usbhidsettings.h
+    xmlparse/interfaceparser.h
+    xmlparse/xmlparser.h
+    board.h
+    colors.h
+    configv.h
+    datamanager.h
+    datarecv.h
+    datatypes.h
+    delegate_check.h
+    delegate_widget.h
+    error.h
+    errorqueue.h
+    helper.h
+    logclass.h
+    logger.h
+    modules.h
+    pch.h
+    registers.h
+    s2.h
+    s2helper.h
+    std_ext.h
+    stdfunc.h
+    timefunc.h
+    uint24.h
+)
 
-target_sources(gen PRIVATE
+target_sources(${PROJECT_NAME} PRIVATE
   ${files_cpp} ${files_h}
 )
 
+set_target_properties(
+    ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
+    "${public_headers}")
+
 target_link_libraries(
-  gen
+  ${PROJECT_NAME}
   PRIVATE Qt${QT_VERSION_MAJOR}::Core
   PRIVATE Qt${QT_VERSION_MAJOR}::Xml
   PRIVATE Qt${QT_VERSION_MAJOR}::Network
@@ -160,6 +155,28 @@ target_link_libraries(
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIBRARY)
 
-install(TARGETS gen EXPORT GenTargets)
-install(EXPORT GenTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/gen/cmake)
-install(FILES ${files_h} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gen)
+message(STATUS ${PROJECT_NAME} " Include dir: " ${CMAKE_INSTALL_INCLUDEDIR})
+message(STATUS ${PROJECT_NAME} " data dir: " ${CMAKE_INSTALL_DATADIR})
+
+# --- install libs and bins ---
+
+install(TARGETS ${PROJECT_NAME} EXPORT CustomTargets)
+install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
+install(TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${PROJECT_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
+)
+
+# --- install includes ---
+
+# the variant with PUBLIC_HEADER property unfortunately does not preserve the folder structure
+#set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
+# so instead we iterate through public headers and install them "manually"
+foreach(header ${public_headers})
+#    file(RELATIVE_PATH header_file_path "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}" "${header}")
+    get_filename_component(header_directory_path "${header_file_path}" DIRECTORY)
+    install(
+        FILES ${header}
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${header_directory_path}"
+    )
+endforeach()

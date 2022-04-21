@@ -1,4 +1,4 @@
-#include "modbusprivate.h"
+#include "modbussettings.h"
 
 QDebug CommandsMBS::operator<<(QDebug debug, const CommandsMBS::ModbusGroup &settings)
 {

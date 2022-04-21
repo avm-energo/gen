@@ -1,8 +1,8 @@
 #include "xmlparser.h"
 
-#include "../settings/iec104private.h"
-#include "../settings/modbusprivate.h"
-#include "../settings/protocomprivate.h"
+#include "../settings/iec104settings.h"
+#include "../settings/modbussettings.h"
+#include "../settings/protocomsettings.h"
 #include "../settings/settings.h"
 #include "board.h"
 #include "interfaceparser.h"
