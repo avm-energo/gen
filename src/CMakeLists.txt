@@ -160,8 +160,8 @@ message(STATUS ${PROJECT_NAME} " data dir: " ${CMAKE_INSTALL_DATADIR})
 
 # --- install libs and bins ---
 
-install(TARGETS ${PROJECT_NAME} EXPORT CustomTargets)
-install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
+# install(TARGETS ${PROJECT_NAME} EXPORT CustomTargets)
+# install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${PROJECT_NAME}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
@@ -173,8 +173,10 @@ install(TARGETS ${PROJECT_NAME}
 #set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
 # so instead we iterate through public headers and install them "manually"
 foreach(header ${public_headers})
-#    file(RELATIVE_PATH header_file_path "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}" "${header}")
+    file(RELATIVE_PATH header_file_path "${CMAKE_CURRENT_SOURCE_DIR}/" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
     get_filename_component(header_directory_path "${header_file_path}" DIRECTORY)
+#    message(STATUS "header_directory_path: " ${header_directory_path})
+#    message(STATUS "header: " ${header})
     install(
         FILES ${header}
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${header_directory_path}"
