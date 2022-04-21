@@ -103,28 +103,28 @@ add_library(
   )
 
 set(public_headers
-    ctti\detail\algorithm.hpp
-    ctti\detail\cstring.hpp
-    ctti\detail\entity_name.hpp
-    ctti\detail\hash.hpp
-    ctti\detail\language_features.hpp
-    ctti\detail\meta.hpp
-    ctti\detail\name_filters.hpp
-    ctti\detail\preprocessor.hpp
-    ctti\detail\pretty_function.hpp
-    ctti\detailed_nameof.hpp
-    ctti\hash_literal.hpp
-    ctti\map.hpp
-    ctti\model.hpp
-    ctti\name.hpp
-    ctti\nameof.hpp
-    ctti\serialization.hpp
-    ctti\static_value.hpp
-    ctti\symbol.hpp
-    ctti\symbol_from_hash.hpp
-    ctti\tie.hpp
-    ctti\type_id.hpp
-    ctti\type_tag.hpp
+    ctti/detail/algorithm.hpp
+    ctti/detail/cstring.hpp
+    ctti/detail/entity_name.hpp
+    ctti/detail/hash.hpp
+    ctti/detail/language_features.hpp
+    ctti/detail/meta.hpp
+    ctti/detail/name_filters.hpp
+    ctti/detail/preprocessor.hpp
+    ctti/detail/pretty_function.hpp
+    ctti/detailed_nameof.hpp
+    ctti/hash_literal.hpp
+    ctti/map.hpp
+    ctti/model.hpp
+    ctti/name.hpp
+    ctti/nameof.hpp
+    ctti/serialization.hpp
+    ctti/static_value.hpp
+    ctti/symbol.hpp
+    ctti/symbol_from_hash.hpp
+    ctti/tie.hpp
+    ctti/type_id.hpp
+    ctti/type_tag.hpp
     files/files.h
     files/xz.h
     settings/iec104settings.h
@@ -153,6 +153,7 @@ set(public_headers
     registers.h
     s2.h
     s2helper.h
+    singleton.h
     std_ext.h
     stdfunc.h
     timefunc.h

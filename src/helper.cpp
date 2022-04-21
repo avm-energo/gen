@@ -1,5 +1,6 @@
 #include "helper.h"
 
+#include "settings/usbhidsettings.h"
 //#include "settings/usbhidportinfo.h"
 //#ifdef QT_GUI_LIB
 //#include "../models/errorprotocolitem.h"
@@ -71,16 +72,16 @@ QDebug operator<<(QDebug debug, const S2DataTypes::OscInfo &st)
     return debug.maybeSpace();
 }
 
-// QDebug operator<<(QDebug debug, const UsbHidSettings &settings)
-//{
-//    debug.nospace() << QString::number(settings.vendor_id, 16) << ":" << QString::number(settings.product_id, 16) <<
-//    ":"
-//                    << settings.serial;
-//#ifdef QT_DEBUG
-//    debug.nospace() << ":" << settings.path;
-//#endif
-//    return debug.maybeSpace();
-//}
+QDebug operator<<(QDebug debug, const UsbHidSettings &settings)
+{
+    debug.nospace() << QString::number(settings.vendor_id, 16) << ":" << QString::number(settings.product_id, 16) << ":"
+                    << settings.serial;
+#ifdef QT_DEBUG
+    debug.nospace() << ":" << settings.path;
+#endif
+    return debug.maybeSpace();
+}
+
 //#ifdef QT_GUI_LIB
 // QDebug operator<<(QDebug debug, const ErrorProtocolItem &item)
 //{

@@ -6,7 +6,7 @@
 
 // class ErrorProtocolItem;
 // class ETableItemData;
-// struct UsbHidSettings;
+struct UsbHidSettings;
 
 QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st);
 QDebug operator<<(QDebug debug, const DataTypes::FloatWithTimeStruct &st);
@@ -18,7 +18,7 @@ QDebug operator<<(QDebug debug, const DataTypes::SignalsStruct &st);
 QDebug operator<<(QDebug debug, const DataTypes::Signal &st);
 QDebug operator<<(QDebug debug, const DataTypes::GeneralResponseStruct &st);
 QDebug operator<<(QDebug debug, const S2DataTypes::OscInfo &st);
-// QDebug operator<<(QDebug debug, const UsbHidSettings &settings);
+QDebug operator<<(QDebug debug, const UsbHidSettings &settings);
 
 template <std::size_t N> QDebug operator<<(QDebug debug, const std::bitset<N> &bitset)
 {
