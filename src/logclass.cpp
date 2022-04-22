@@ -1,5 +1,6 @@
 #include "logclass.h"
 
+#include "files/files.h"
 #include "stdfunc.h"
 
 #include <QDataStream>
@@ -76,7 +77,7 @@ void LogClass::WriteFile(const QString &Prepend, const QString &msg)
         fp->write(msg.toLocal8Bit());
         fp->write("\n");
         fp->flush();
-        CheckAndCompress();
+        Files::checkNGzip(LogFile);
     }
 }
 
@@ -97,36 +98,6 @@ void LogClass::WriteRaw(const QByteArray &ba)
             return;
         if (!fp->flush())
             return;
-        CheckAndCompress();
+        Files::checkNGzip(LogFile);
     }
-}
-
-void LogClass::CheckAndCompress()
-{
-    QString GZippedLogFile = LogFile;
-    if (fp->size() < LOG_MAX_SIZE)
-        return;
-    if (!StdFunc::rotateGzipLogs(GZippedLogFile))
-        return;
-    GZippedLogFile += ".0.gz";
-
-    QFile fileIn, fileOut;
-    fileIn.setFileName(LogFile);
-    if (!fileIn.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qCritical() << "Cannot open the file" << LogFile;
-        return;
-    }
-    fileOut.setFileName(GZippedLogFile);
-    if (!fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-        qCritical() << "Cannot open the file" << GZippedLogFile;
-        return;
-    }
-    fp->close();
-
-    fileOut.write(StdFunc::compress(fileIn.readAll()));
-    fileIn.close();
-    fileOut.close();
-    fp->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
 }

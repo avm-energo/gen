@@ -1,5 +1,6 @@
 #ifndef FILES_H
 #define FILES_H
+
 #include "../error.h"
 
 #include <QString>
@@ -17,8 +18,8 @@ public:
     static QStringList Drives();
     static QStringList SearchForFile(QStringList &di, const QString &filename, bool subdirs = false);
     static QString GetFirstDriveWithLabel(QStringList &filepaths, const QString &label);
-    static QByteArray XZCompress(QByteArray &ba);
-    //    static QByteArray XZDecompress(QByteArray &ba);
+    static void checkNGzip(QString &fileName);
+    static bool rotateGzipLogs(const QString &path);
 };
 
 #endif // FILES_H

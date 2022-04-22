@@ -72,9 +72,6 @@ public:
     {
         list.append(item);
     }
-    static QByteArray compress(const QByteArray &data);
-    static bool rotateGzipLogs(const QString &path);
-
     static void removeSubstr(std::string &str, std::string &substr);
 
     template <typename T, size_t size = sizeof(T)> static QByteArray arrayFromNumber(T number)

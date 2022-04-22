@@ -12,7 +12,7 @@ message(STATUS "XZ directory: " ${XZ_SRC_DIR})
 
 ### MAIN PART
 
-set(PROJECT_TARGET_NAME "win64")
+# set(PROJECT_TARGET_NAME "win64")
 set(XZ_BINARY_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin)
 set(XZ_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
 set(XZ_LIBRARY_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/lib)
@@ -21,11 +21,14 @@ message(STATUS "XZ Library directory: " ${XZ_LIBRARY_DIR})
 
 string(TOLOWER ${CMAKE_SYSTEM_NAME} CMAKE_SYSTEM_NAME_LOWER)
 
-if(CMAKE_SYSTEM_NAME_LOWER STREQUAL "windows")
-  set(CHANGING_FILE ${XZ_LIBRARY_DIR}/xz.lib)
-else()
-  set(CHANGING_FILE ${XZ_LIBRARY_DIR}/xz.so)
-endif()
+#if(CMAKE_SYSTEM_NAME_LOWER STREQUAL "windows")
+#  set(CHANGING_FILE ${XZ_LIBRARY_DIR}/xz.lib)
+#else()
+#  set(CHANGING_FILE ${XZ_LIBRARY_DIR}/xz.so)
+#endif()
+
+message(STATUS "XZ Custom target generator: " ${CUSTOM_TARGET_GENERATOR})
+message(STATUS "XZ Custom target platform: " ${CUSTOM_TARGET_PLATFORM_ARG})
 
 ExternalProject_Add(
   XZBuild
@@ -36,14 +39,16 @@ ExternalProject_Add(
     -DQT${QT_VERSION_MAJOR}_DIR:STRING=${QT_DIR}
     -DQT_DIR:STRING=${QT_DIR}
     -DCMAKE_PREFIX_PATH:STRING=${CMAKE_PREFIX_PATH}
-    -DCMAKE_BUILD_TYPE:String=Release
+#    -DCMAKE_CONFIGURATION_TYPES=${CMAKE_CONFIGURATION_TYPES}
+    -DCMAKE_BUILD_TYPE:String=${CMAKE_BUILD_TYPE}
+    -DBUILD_SHARED_LIBS=ON
     -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}
     -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
     -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
     -DCMAKE_MODULE_PATH=${CMAKE_BINARY_DIR}
-  BUILD_COMMAND ${CMAKE_COMMAND} --build . --config Release
-  INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config Release
-  BUILD_BYPRODUCTS ${CHANGING_FILE}
+  BUILD_COMMAND ${CMAKE_COMMAND} --build . -j${NCPU} --config ${CMAKE_BUILD_TYPE}
+  INSTALL_COMMAND ${CMAKE_COMMAND} --install . --config ${CMAKE_BUILD_TYPE}
+#  BUILD_BYPRODUCTS ${CHANGING_FILE}
   USES_TERMINAL_BUILD TRUE
   USES_TERMINAL_CONFIGURE TRUE)
 
@@ -68,18 +73,19 @@ endif()
 add_library(xz SHARED IMPORTED GLOBAL)
 set_target_properties(xz PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
                                             ${XZ_INCLUDE_DIRS})
+
 if(CMAKE_SYSTEM_NAME_LOWER STREQUAL "windows")
   set_target_properties(
     xz
     PROPERTIES IMPORTED_LOCATION ${XZ_BINARY_DIR}
-               IMPORTED_IMPLIB ${XZ_LIBRARY_DIR}/xz.lib)
+               IMPORTED_IMPLIB ${XZ_LIBRARY_DIR}/liblzma.lib)
 else()
   set_target_properties(
     xz PROPERTIES IMPORTED_LOCATION
-                          ${XZ_LIBRARY_DIR}/libxz.so)
+                          ${XZ_LIBRARY_DIR}/liblzma.so)
 endif()
 
 set(XZ_LIBS xz)
-set(XZ_LIBRARY_DIRS ${XZ_BINARY_DIR} ${XZ_LIBRARY_DIR})
+# set(XZ_LIBRARY_DIRS ${XZ_BINARY_DIR} ${XZ_LIBRARY_DIR})
 
 add_dependencies(xz XZBuild)

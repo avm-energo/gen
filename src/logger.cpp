@@ -1,7 +1,7 @@
 #include "logger.h"
 
 #include "errorqueue.h"
-#include "files/xz.h"
+#include "files/files.h"
 #include "stdfunc.h"
 
 #include <iostream>
@@ -46,7 +46,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
     out << msgTypes.value(type) << space << msg << Qt::endl;
     out.flush(); // Flush buffer
     logFile.close();
-    XZ::checkNGzip(fileName);
+    Files::checkNGzip(fileName);
 }
 
 void Logger::writeStart()
@@ -61,7 +61,7 @@ void Logger::writeStart()
         << QCoreApplication::applicationName() << " v." << QCoreApplication::applicationVersion();
     out.flush();
     logFile.close();
-    XZ::checkNGzip(fileName);
+    Files::checkNGzip(fileName);
 }
 
 /// Категории мы сейчас не используем, задел на будущее

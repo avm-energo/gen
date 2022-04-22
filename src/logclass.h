@@ -31,8 +31,6 @@ private:
     bool CanLog;
     QFile *fp;
     QMutex *mtx;
-
-    void CheckAndCompress();
 };
 
 #endif // LOG_H

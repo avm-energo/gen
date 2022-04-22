@@ -99,7 +99,7 @@ file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
 
 add_library(
-  ${PROJECT_NAME} STATIC
+  ${PROJECT_NAME} SHARED
   )
 
 set(public_headers
@@ -164,9 +164,9 @@ target_sources(${PROJECT_NAME} PRIVATE
   ${files_cpp} ${files_h}
 )
 
-set_target_properties(
-    ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
-    "${public_headers}")
+# set_target_properties(
+#    ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
+#    "${public_headers}")
 
 target_link_libraries(
   ${PROJECT_NAME}

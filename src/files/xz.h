@@ -9,8 +9,8 @@ class XZ
 {
 public:
     XZ();
-    static void checkNGzip(QString &fileName);
-    static bool rotateGzipLogs(const QString &path);
+    static QByteArray XZCompress(const QByteArray &ba);
+    //    static QByteArray XZDecompress(QByteArray &ba);
 };
 
 #endif // XZ_H
