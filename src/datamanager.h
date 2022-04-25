@@ -3,6 +3,7 @@
 
 #include "datatypes.h"
 #include "error.h"
+#include "gen_export.h"
 #include "singleton.h"
 
 #include <QMutex>
@@ -17,7 +18,7 @@
 
 template <class> inline constexpr bool always_false_v = false;
 
-class DataManager : public QObject, public Singleton<DataManager>
+class GENLIB_EXPORT DataManager : public QObject, public Singleton<DataManager>
 {
     Q_OBJECT
 public:

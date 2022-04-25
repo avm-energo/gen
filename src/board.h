@@ -4,10 +4,11 @@
 #define DEVICETYPE_DEVICE 2 // прибор
 
 #include "datatypes.h"
+#include "gen_export.h"
 #include "modules.h"
 #include "singleton.h"
 
-class Board : public QObject, public Singleton<Board>
+class GENLIB_EXPORT Board : public QObject, public Singleton<Board>
 {
     Q_OBJECT
 

@@ -32,41 +32,30 @@ string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
 if (MSVC)
     add_compile_options(/permissive-)
-    string(APPEND CMAKE_CXX_FLAGS " /w14456 /w14189 /w14458 /w14100 /w14996")
-else()
-    #TODO make the same as msvc
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS             ON)
-
-message(STATUS "Cached target arch: " ${CACHED_PROJECT_TARGET_NAME})
 message(STATUS "Current target arch: " ${PROJECT_TARGET_NAME})
-message(STATUS "Sysroot: " ${CMAKE_SYSROOT})
-
-if(NOT DEFINED CACHED_PROJECT_TARGET_NAME)
-    set(CACHED_PROJECT_TARGET_NAME "dummy")
-endif()
-
-message(STATUS "${CMAKE_BUILD_TYPE_LOWER} mode")
 
 find_package(
   QT NAMES Qt6 Qt5
   COMPONENTS Core Network Xml
   REQUIRED)
+
 find_package(
   Qt${QT_VERSION_MAJOR}
   COMPONENTS Core Network Xml
   REQUIRED)
+
 set(QT_VERSION ${Qt5Core_VERSION})
 message(STATUS "QT version - ${QT_VERSION}")
 
-if(CMAKE_BUILD_TYPE EQUAL "DEBUG")
+if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
   message(STATUS "debug mode")
   set(MODE_DIR Debug)
 else()
   message(STATUS "not a debug mode")
   set(MODE_DIR Release)
-endif(CMAKE_BUILD_TYPE EQUAL "DEBUG")
+endif()
 
 message(STATUS "CMAKE_GENERATOR: " ${CMAKE_GENERATOR})
 
@@ -79,16 +68,16 @@ else()
 endif()
 
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
-    set(CUSTOM_TARGET_PLATFORM_ARG -A${WINDOWS_TARGET_NAME})
+    set(CUSTOM_TARGET_PLATFORM_ARG "-A${WINDOWS_TARGET_NAME}")
 else()
     set(CUSTOM_TARGET_GENERATOR "-G${CMAKE_GENERATOR}")
   # Other stuff
 endif()
 
-
 message(STATUS "CUSTOM_TARGET_PLATFORM_ARG: " ${CUSTOM_TARGET_PLATFORM_ARG})
 message(STATUS "CUSTOM_TARGET_GENERATOR: " ${CUSTOM_TARGET_GENERATOR})
 
+#include("${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/${CMAKE_INSTALL_LIBDIR}/cmake/liblzma/liblzma-targets.cmake")
 include(xz)
 
 #------------------------------------------------------------------------------
@@ -101,6 +90,35 @@ file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
 add_library(
   ${PROJECT_NAME} SHARED
   )
+
+target_sources(${PROJECT_NAME} PRIVATE
+  ${files_cpp} ${files_h}
+)
+
+target_link_libraries(
+  ${PROJECT_NAME}
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core
+  PRIVATE Qt${QT_VERSION_MAJOR}::Xml
+  PRIVATE Qt${QT_VERSION_MAJOR}::Network
+  PUBLIC xz
+  )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIBRARY)
+
+message(STATUS ${PROJECT_NAME} " include dir: " ${CMAKE_INSTALL_INCLUDEDIR})
+message(STATUS ${PROJECT_NAME} " data dir: " ${CMAKE_INSTALL_DATADIR})
+message(STATUS ${PROJECT_NAME} " lib dir: " ${CMAKE_INSTALL_LIBDIR})
+
+# --- install libs and bins ---
+
+install(TARGETS ${PROJECT_NAME}
+        EXPORT CustomTargets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
+
+# --- install includes ---
 
 set(public_headers
     ctti/detail/algorithm.hpp
@@ -160,46 +178,12 @@ set(public_headers
     uint24.h
 )
 
-target_sources(${PROJECT_NAME} PRIVATE
-  ${files_cpp} ${files_h}
-)
-
-# set_target_properties(
-#    ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
-#    "${public_headers}")
-
-target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core
-  PRIVATE Qt${QT_VERSION_MAJOR}::Xml
-  PRIVATE Qt${QT_VERSION_MAJOR}::Network
-  PUBLIC xz
-  )
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIBRARY)
-
-message(STATUS ${PROJECT_NAME} " Include dir: " ${CMAKE_INSTALL_INCLUDEDIR})
-message(STATUS ${PROJECT_NAME} " data dir: " ${CMAKE_INSTALL_DATADIR})
-
-# --- install libs and bins ---
-
-# install(TARGETS ${PROJECT_NAME} EXPORT CustomTargets)
-# install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
-install(TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-# --- install includes ---
-
 # the variant with PUBLIC_HEADER property unfortunately does not preserve the folder structure
-#set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
+# set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
 # so instead we iterate through public headers and install them "manually"
 foreach(header ${public_headers})
     file(RELATIVE_PATH header_file_path "${CMAKE_CURRENT_SOURCE_DIR}/" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
     get_filename_component(header_directory_path "${header_file_path}" DIRECTORY)
-#    message(STATUS "header_directory_path: " ${header_directory_path})
-#    message(STATUS "header: " ${header})
     install(
         FILES ${header}
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${header_directory_path}"

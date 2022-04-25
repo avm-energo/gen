@@ -1,6 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include "gen_export.h"
+
 #include <QFile>
 #include <QMutex>
 
@@ -11,7 +13,7 @@ constexpr char logStart[] = "=== Log started ===\n";
 constexpr char logExt[] = "log";
 }
 
-class LogClass : public QObject
+class GENLIB_EXPORT LogClass : public QObject
 {
     Q_OBJECT
 

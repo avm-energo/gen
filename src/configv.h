@@ -1,7 +1,8 @@
 #pragma once
 #include "datarecv.h"
+#include "gen_export.h"
 
-class ConfigV
+class GENLIB_EXPORT ConfigV
 {
 
 public:

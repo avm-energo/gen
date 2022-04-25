@@ -1,6 +1,8 @@
 #ifndef STDFUNC_H
 #define STDFUNC_H
 
+#include "gen_export.h"
+
 #include <QObject>
 #include <QString>
 #include <cmath>
@@ -27,7 +29,7 @@ template <typename T> using SharedPointer = std::shared_ptr<T>;
 
 template <typename T> using UniquePointer = std::unique_ptr<T, QtHelper::deleteLaterDeletor>;
 
-class StdFunc
+class GENLIB_EXPORT StdFunc
 {
 public:
     StdFunc();
@@ -112,7 +114,8 @@ private:
     static QString HomeDir;       // рабочий каталог программы
     static QString SystemHomeDir; // системный каталог программы
 
-    static bool Cancelled, s_cancelEnabled;
+    static bool Cancelled;
+    static bool s_cancelEnabled;
 
     static int m_tuneRequestCount; // степень усреднения для регулировки
 };

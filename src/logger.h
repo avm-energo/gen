@@ -1,5 +1,7 @@
 #pragma once
 
+#include "gen_export.h"
+
 #include <QLoggingCategory>
 #include <QtCore>
 
@@ -8,7 +10,7 @@ Q_DECLARE_LOGGING_CATEGORY(logInfo)
 Q_DECLARE_LOGGING_CATEGORY(logWarning)
 Q_DECLARE_LOGGING_CATEGORY(logCritical)
 
-class Logger
+class GENLIB_EXPORT Logger
 {
 public:
     void static messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);

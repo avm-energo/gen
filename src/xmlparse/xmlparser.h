@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../datatypes.h"
+#include "../gen_export.h"
 #include "../settings/settings.h"
 
 #include <QDomElement>
@@ -12,7 +13,7 @@ namespace delegate
 struct ModuleSettings;
 struct GlobalSettings;
 class XmlParserHelper;
-class XmlParser
+class GENLIB_EXPORT XmlParser
 {
     friend XmlParserHelper;
 

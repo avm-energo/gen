@@ -1,12 +1,13 @@
 #ifndef S2_H
 #define S2_H
 #include "datatypes.h"
+#include "gen_export.h"
 
 #include <QVector>
 constexpr int MAXSIZE = 200000;
 
 class BaseInterface;
-class S2
+class GENLIB_EXPORT S2
 {
     friend BaseInterface;
 

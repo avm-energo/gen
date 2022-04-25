@@ -1,9 +1,11 @@
 #pragma once
+#include "gen_export.h"
+
 #include <bitset>
 #include <cstdint>
 const int UINT24_MAX = 16777215;
 
-class uint24
+class GENLIB_EXPORT uint24
 {
 protected:
     unsigned char value[3];

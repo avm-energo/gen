@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../gen_export.h"
+
 #include <QDebug>
 #include <QMap>
 #include <QMetaEnum>
@@ -129,7 +131,7 @@ template <typename FuncCode, typename TypeId> struct BaseGroup : BaseRegister<Fu
 
 // Class have to derived from BaseGroup due to dependent types
 template <typename Group, typename = typename std::enable_if<is_base_of_template<BaseGroup, Group>::value>::type>
-class InterfaceInfo
+class GENLIB_EXPORT InterfaceInfo
 {
 public:
     using Register = typename Group::base;

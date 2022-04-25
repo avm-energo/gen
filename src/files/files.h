@@ -2,10 +2,11 @@
 #define FILES_H
 
 #include "../error.h"
+#include "../gen_export.h"
 
 #include <QString>
 
-class Files
+class GENLIB_EXPORT Files
 {
 public:
     Files();

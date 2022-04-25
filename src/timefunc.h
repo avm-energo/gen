@@ -1,14 +1,17 @@
 #ifndef TIMEFUNC_H
 #define TIMEFUNC_H
 
+#include "gen_export.h"
+
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QTimeZone>
+
 #define SLEEPINT 20
 #define TIMEOUT_MAIN 2000
 #define TIMEOUT_BIG 30000
 
-class TimeFunc
+class GENLIB_EXPORT TimeFunc
 {
 public:
     TimeFunc();
