@@ -164,6 +164,7 @@ set(public_headers
     delegate_widget.h
     error.h
     errorqueue.h
+    gen_export.h
     helper.h
     logclass.h
     logger.h
