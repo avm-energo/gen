@@ -4,7 +4,7 @@
 #include <memory>
 
 /// https://codereview.stackexchange.com/questions/173929/modern-c-singleton-template
-template <typename T> class GENLIB_EXPORT Singleton
+template <typename T> class Singleton
 {
 public:
     static T &GetInstance();
