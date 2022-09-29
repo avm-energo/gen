@@ -34,20 +34,10 @@ if (MSVC)
     add_compile_options(/permissive-)
 endif()
 
-message(STATUS "Current target arch: " ${PROJECT_TARGET_NAME})
-
 find_package(
-  QT NAMES Qt6 Qt5
+  Qt5
   COMPONENTS Core Network Xml
   REQUIRED)
-
-find_package(
-  Qt${QT_VERSION_MAJOR}
-  COMPONENTS Core Network Xml
-  REQUIRED)
-
-set(QT_VERSION ${Qt5Core_VERSION})
-message(STATUS "QT version - ${QT_VERSION}")
 
 if(CMAKE_BUILD_TYPE_LOWER STREQUAL "debug")
   message(STATUS "debug mode")
@@ -87,9 +77,34 @@ include(xz)
 file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
 
+set(GLOBAL_HEADERS
+    files/files.h
+    files/xz.h
+    colors.h
+    comaexception.h
+    datamanager/datamanager.h
+    datamanager/typesproxy.h
+    error.h
+    errorqueue.h
+    helper.h
+    logclass.h
+    logger.h
+    pch.h
+    registers.h
+    settings.h
+    singleton.h
+    std_ext.h
+    stdfunc.h
+    timefunc.h
+    uint24.h
+)
+
 add_library(
   ${PROJECT_NAME} SHARED
   )
+target_compile_definitions( ${PROJECT_NAME} PUBLIC -DGEN_EXPORT_LIBRARY)
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
 
 target_sources(${PROJECT_NAME} PRIVATE
   ${files_cpp} ${files_h}
@@ -103,91 +118,18 @@ target_link_libraries(
   PUBLIC xz
   )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_LIBRARY)
-
-message(STATUS ${PROJECT_NAME} " include dir: " ${CMAKE_INSTALL_INCLUDEDIR})
-message(STATUS ${PROJECT_NAME} " data dir: " ${CMAKE_INSTALL_DATADIR})
-message(STATUS ${PROJECT_NAME} " lib dir: " ${CMAKE_INSTALL_LIBDIR})
+target_include_directories( ${PROJECT_NAME} PRIVATE . )
 
 # --- install libs and bins ---
 
 install(TARGETS ${PROJECT_NAME}
-        EXPORT CustomTargets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-install(EXPORT CustomTargets DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake)
 
 # --- install includes ---
 
-set(public_headers
-    ctti/detail/algorithm.hpp
-    ctti/detail/cstring.hpp
-    ctti/detail/entity_name.hpp
-    ctti/detail/hash.hpp
-    ctti/detail/language_features.hpp
-    ctti/detail/meta.hpp
-    ctti/detail/name_filters.hpp
-    ctti/detail/preprocessor.hpp
-    ctti/detail/pretty_function.hpp
-    ctti/detailed_nameof.hpp
-    ctti/hash_literal.hpp
-    ctti/map.hpp
-    ctti/model.hpp
-    ctti/name.hpp
-    ctti/nameof.hpp
-    ctti/serialization.hpp
-    ctti/static_value.hpp
-    ctti/symbol.hpp
-    ctti/symbol_from_hash.hpp
-    ctti/tie.hpp
-    ctti/type_id.hpp
-    ctti/type_tag.hpp
-    files/files.h
-    files/xz.h
-    settings/iec104settings.h
-    settings/interfacesettings.h
-    settings/modbussettings.h
-    settings/protocomsettings.h
-    settings/settings.h
-    settings/usbhidsettings.h
-    xmlparse/interfaceparser.h
-    xmlparse/xmlparser.h
-    board.h
-    colors.h
-    configv.h
-    datamanager.h
-    datarecv.h
-    datatypes.h
-    delegate_check.h
-    delegate_widget.h
-    error.h
-    errorqueue.h
-    gen_export.h
-    helper.h
-    logclass.h
-    logger.h
-    modules.h
-    pch.h
-    registers.h
-    s2.h
-    s2helper.h
-    singleton.h
-    std_ext.h
-    stdfunc.h
-    timefunc.h
-    uint24.h
-)
-
-# the variant with PUBLIC_HEADER property unfortunately does not preserve the folder structure
-# set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${public_headers}")
-# so instead we iterate through public headers and install them "manually"
-foreach(header ${public_headers})
-    file(RELATIVE_PATH header_file_path "${CMAKE_CURRENT_SOURCE_DIR}/" "${CMAKE_CURRENT_SOURCE_DIR}/${header}")
-    get_filename_component(header_directory_path "${header_file_path}" DIRECTORY)
-    install(
-        FILES ${header}
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${header_directory_path}"
-    )
-endforeach()
+install(FILES
+  ${GLOBAL_HEADERS}
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")

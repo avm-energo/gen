@@ -28,7 +28,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
     std::string function = context.function ? context.function : "";
     std::string rubbish(" __cdecl");
-    StdFunc::removeSubstr(function, rubbish);
+    StdFunc::RemoveSubstr(function, rubbish);
 
     ErrorMsg tmpm {
         QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss"), // DateTime

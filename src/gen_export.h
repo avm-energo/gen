@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#if defined(gen_LIBRARY)
+#if defined(GEN_EXPORT_LIBRARY)
 #define GENLIB_EXPORT Q_DECL_EXPORT
 #else
 #define GENLIB_EXPORT Q_DECL_IMPORT
