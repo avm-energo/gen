@@ -1,17 +1,18 @@
 #pragma once
 #include "datatypes.h"
+#include "gen_export.h"
 
 #include <QDebug>
 #include <bitset>
 
-QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::FloatWithTimeStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::FloatStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::SinglePointWithTimeStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::BlockStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::SignalsStruct &st);
-QDebug operator<<(QDebug debug, const DataTypes::Signal &st);
-QDebug operator<<(QDebug debug, const DataTypes::GeneralResponseStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::FloatWithTimeStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::FloatStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::SinglePointWithTimeStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::BlockStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::SignalsStruct &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::Signal &st);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::GeneralResponseStruct &st);
 
 template <std::size_t N> QDebug operator<<(QDebug debug, const std::bitset<N> &bitset)
 {
@@ -21,6 +22,3 @@ template <std::size_t N> QDebug operator<<(QDebug debug, const std::bitset<N> &b
 
     return debug.maybeSpace();
 }
-
-// QDebug operator<<(QDebug debug, const ErrorProtocolItem &item);
-// QDebug operator<<(QDebug debug, const ETableItemData &item);

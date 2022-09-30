@@ -77,38 +77,34 @@ include(xz)
 file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
 
-set(GLOBAL_HEADERS
-    files/files.h
-    files/xz.h
-    colors.h
-    comaexception.h
-    datamanager/datamanager.h
-    datamanager/typesproxy.h
-    error.h
-    errorqueue.h
-    helper.h
-    logclass.h
-    logger.h
-    pch.h
-    registers.h
-    settings.h
-    singleton.h
-    std_ext.h
-    stdfunc.h
-    timefunc.h
-    uint24.h
-)
+#set(GLOBAL_HEADERS
+#    files/files.h
+#    files/xz.h
+#    colors.h
+#    comaexception.h
+#    datamanager/datamanager.h
+#    datamanager/typesproxy.h
+#    datatypes.h
+#    error.h
+#    errorqueue.h
+#    gen_export.h
+#    helper.h
+#    logclass.h
+#    logger.h
+#    pch.h
+#    registers.h
+#    settings.h
+#    singleton.h
+#    std_ext.h
+#    stdfunc.h
+#    timefunc.h
+#    uint24.h
+#)
 
-add_library(
-  ${PROJECT_NAME} SHARED
-  )
-target_compile_definitions( ${PROJECT_NAME} PUBLIC -DGEN_EXPORT_LIBRARY)
-
+add_library(${PROJECT_NAME} SHARED)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DGEN_EXPORT_LIBRARY)
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
-
-target_sources(${PROJECT_NAME} PRIVATE
-  ${files_cpp} ${files_h}
-)
+target_sources(${PROJECT_NAME} PRIVATE ${files_cpp} ${files_h})
 
 target_link_libraries(
   ${PROJECT_NAME}
@@ -130,6 +126,13 @@ install(TARGETS ${PROJECT_NAME}
 
 # --- install includes ---
 
-install(FILES
-  ${GLOBAL_HEADERS}
-  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")
+#install(FILES
+#  ${GLOBAL_HEADERS}
+#  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")
+
+install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
+    FILES_MATCHING
+    PATTERN "*.h"
+    PATTERN "3rdParty" EXCLUDE
+    PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
+#file(REMOVE_RECURSE "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/win64")
