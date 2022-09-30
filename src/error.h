@@ -1,5 +1,7 @@
 #pragma once
 
+#include "gen_export.h"
+
 #include <QDebug>
 #include <QMap>
 #include <QObject>
@@ -14,7 +16,7 @@
 /// \brief Namespace for critical message logging
 namespace Error
 {
-Q_NAMESPACE
+// Q_NAMESPACE
 
 /// Enumeration for possible errors in program runtime.
 enum Msg
@@ -67,9 +69,10 @@ const QMap<Msg, QString> MsgStr { { ResEmpty, "Пустой результат" 
     { FileOpenError, "Ошибка открытия файла" }, { FileWriteError, "Ошибка записи файла" },
     { UnknownError, "Неизвестная ошибка" } };
 
-Q_ENUM_NS(Msg)
+// Q_ENUM_NS(Msg)
 
 }
+Q_DECLARE_METATYPE(Error::Msg)
 
 /// \brief Structure for storage error message data.
 struct ErrorMsg
@@ -82,7 +85,7 @@ struct ErrorMsg
 };
 
 /// \brief Output to string list operator overloading.
-QStringList &operator<<(QStringList &l, const ErrorMsg &obj);
+GENLIB_EXPORT QStringList &operator<<(QStringList &l, const ErrorMsg &obj);
 
 /// \brief Output to QDebug (stdout) operator overloading.
-QDebug operator<<(QDebug debug, const ErrorMsg &error);
+GENLIB_EXPORT QDebug operator<<(QDebug debug, const ErrorMsg &error);
