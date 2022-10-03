@@ -1,0 +1,4 @@
+[submodule "include/xz"]
+	path = include/xz
+	url = ssh://git@git.avmenergo.ru:5507/svm/xz.git
+	branch = master
