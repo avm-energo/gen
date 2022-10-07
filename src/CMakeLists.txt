@@ -107,10 +107,15 @@ install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
     PATTERN "3rdParty" EXCLUDE
     PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
 
-# --- install liblzma ---
+# --- install liblzma libs and bins ---
 if(WIN32)
     set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin/liblzma.dll)
 else()
     set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/lib/liblzma.so)
 endif()
 install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# --- install liblzma includes ---
+set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
+install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.."
+  FILES_MATCHING PATTERN "*.h")

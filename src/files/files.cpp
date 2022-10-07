@@ -4,10 +4,11 @@
 #include "xz.h"
 
 #include <QDirIterator>
-#include <QFile>
 #include <QIODevice>
 #include <QStorageInfo>
 #include <QtDebug>
+
+constexpr auto LOG_MAX_SIZE = 1024;
 
 Files::Files()
 {
@@ -100,29 +101,26 @@ QString Files::GetFirstDriveWithLabel(QStringList &filepaths, const QString &lab
     return str;
 }
 
-void Files::checkNGzip(QString &fileName)
+void Files::checkNGzip(QFile *logFile)
 {
-    QFile logFile(fileName);
-    if (logFile.size() < LOG_MAX_SIZE)
-        return;
-    if (!rotateGzipLogs(fileName))
-        return;
-
-    QFile fileOut;
-    if (!logFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    auto filename = logFile->fileName();
+    QFile fileOut(filename + ".0.gz");
+    if (logFile->size() >= LOG_MAX_SIZE && rotateGzipLogs(filename))
     {
-        qDebug() << "Cannot open the file" << fileName;
-        return;
+        if (fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            auto &xz = XzCompressor::GetInstance();
+            logFile->seek(0);
+            auto bytes = logFile->readAll(), compressed = xz.compress(bytes);
+            auto wroten = fileOut.write(compressed);
+            logFile->resize(0);
+            logFile->flush();
+            fileOut.flush();
+            fileOut.close();
+        }
+        else
+            qWarning() << "Cannot open the file" << fileOut.fileName();
     }
-    fileOut.setFileName(fileName + "0.gz");
-    if (!fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
-    {
-        qDebug() << "Cannot open the file" << fileOut.fileName();
-        return;
-    }
-    fileOut.write(XZ::XZCompress(logFile.readAll()));
-    fileOut.close();
-    logFile.close();
 }
 
 bool Files::rotateGzipLogs(const QString &path)
@@ -130,16 +128,15 @@ bool Files::rotateGzipLogs(const QString &path)
     // rotating
     for (int i = 9; i > 0; --i)
     {
-        QString tmpsnew = path + "." + QString::number(i) + ".gz";
-        QString tmpsold = path + "." + QString::number(i - 1) + ".gz";
-        QFile fn;
-        fn.setFileName(tmpsnew);
+        auto tempNew = path + "." + QString::number(i) + ".gz";
+        auto tempOld = path + "." + QString::number(i - 1) + ".gz";
+        QFile fn(tempNew);
         if (fn.exists())
             fn.remove();
-        fn.setFileName(tmpsold);
+        fn.setFileName(tempOld);
         if (fn.exists())
         {
-            if (fn.rename(tmpsnew) == false) // error
+            if (fn.rename(tempNew) == false) // error
             {
                 ERMSG("Cannot rename file");
                 return false;

@@ -1,16 +1,25 @@
 #ifndef XZ_H
 #define XZ_H
 
-#include <QString>
+#include "../gen_export.h"
+#include "../singleton.h"
 
-#define LOG_MAX_SIZE 1048576
+#include <QByteArray>
+#include <lzma.h>
 
-class XZ
+class GENLIB_EXPORT XzCompressor : public Singleton<XzCompressor>
 {
+private:
+    lzma_stream stream;
+    lzma_ret state;
+
+    void endFileWork();
+
 public:
-    XZ();
-    static QByteArray XZCompress(const QByteArray &ba);
-    //    static QByteArray XZDecompress(QByteArray &ba);
+    explicit XzCompressor(token token, const int preset = 6);
+    ~XzCompressor();
+    QByteArray compress(const QByteArray &input);
+    // QByteArray decompress(const QByteArray &ba);
 };
 
 #endif // XZ_H

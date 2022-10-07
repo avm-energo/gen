@@ -29,7 +29,6 @@ public:
     void WriteRaw(const QByteArray &ba);
 
 private:
-    QString LogFile;
     bool CanLog;
     QFile *fp;
     QMutex *mtx;

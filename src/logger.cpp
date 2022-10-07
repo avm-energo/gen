@@ -41,12 +41,12 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
     logFile.setFileName(fileName);
     out.setDevice(&logFile);
-    logFile.open(QFile::Append | QFile::Text);
+    logFile.open(QFile::ReadWrite | QFile::Text);
     out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz "); // Log datetime
     out << msgTypes.value(type) << space << msg << Qt::endl;
     out.flush(); // Flush buffer
-    logFile.close();
-    Files::checkNGzip(fileName);
+    // logFile.close();
+    Files::checkNGzip(&logFile);
 }
 
 void Logger::writeStart()
@@ -55,13 +55,13 @@ void Logger::writeStart()
     QFile logFile(fileName);
     QTextStream out;
     out.setDevice(&logFile);
-    logFile.open(QFile::Append | QFile::Text);
+    logFile.open(QFile::ReadWrite | QFile::Text);
     out << "=====================================\nLog file started at "
         << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + "\n"
         << QCoreApplication::applicationName() << " v." << QCoreApplication::applicationVersion();
     out.flush();
-    logFile.close();
-    Files::checkNGzip(fileName);
+    // logFile.close();
+    Files::checkNGzip(&logFile);
 }
 
 /// Категории мы сейчас не используем, задел на будущее

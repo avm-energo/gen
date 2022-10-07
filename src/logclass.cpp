@@ -29,10 +29,10 @@ LogClass::~LogClass()
 
 void LogClass::Init(const QString &Filename)
 {
-    LogFile = StdFunc::GetSystemHomeDir() + Filename;
+    StdFunc::GetSystemHomeDir() + Filename;
     // тестовая проверка открытия файла на запись
-    fp = new QFile(LogFile);
-    if (!fp->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text))
+    fp = new QFile(StdFunc::GetSystemHomeDir() + Filename);
+    if (!fp->open(QIODevice::ReadWrite | QIODevice::Text))
     {
         CanLog = false;
         qCritical("Ошибка открытия файла");
@@ -77,7 +77,7 @@ void LogClass::WriteFile(const QString &Prepend, const QString &msg)
         fp->write(msg.toLocal8Bit());
         fp->write("\n");
         fp->flush();
-        Files::checkNGzip(LogFile);
+        Files::checkNGzip(fp);
     }
 }
 
@@ -98,6 +98,6 @@ void LogClass::WriteRaw(const QByteArray &ba)
             return;
         if (!fp->flush())
             return;
-        Files::checkNGzip(LogFile);
+        Files::checkNGzip(fp);
     }
 }
