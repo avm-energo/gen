@@ -1,14 +1,14 @@
 #include "files.h"
 
 #include "../stdfunc.h"
-#include "xz.h"
+#include "lzma_util.h"
 
 #include <QDirIterator>
 #include <QIODevice>
 #include <QStorageInfo>
 #include <QtDebug>
 
-constexpr auto LOG_MAX_SIZE = 1024;
+constexpr auto LOG_MAX_SIZE = 1048576;
 
 Files::Files()
 {
@@ -109,10 +109,13 @@ void Files::checkNGzip(QFile *logFile)
     {
         if (fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
-            auto &xz = XzCompressor::GetInstance();
+            auto &lzma = LzmaUtil::GetInstance();
             logFile->seek(0);
-            auto bytes = logFile->readAll(), compressed = xz.compress(bytes);
+            auto bytes = logFile->readAll();
+            auto compressed = lzma.compress(bytes);
             auto wroten = fileOut.write(compressed);
+            if (wroten == -1)
+                qCritical("Writing gz file error");
             logFile->resize(0);
             logFile->flush();
             fileOut.flush();
