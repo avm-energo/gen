@@ -13,6 +13,12 @@ Q_DECLARE_METATYPE(timespec);
 namespace DataTypes
 {
 
+enum Quality : quint8
+{
+    Bad = 8,
+    Good = 192
+};
+
 enum DataBlockTypes
 {
     BacBlock,
@@ -61,14 +67,15 @@ struct FloatWithTimeStruct
 {
     quint32 sigAdr;
     float sigVal;
-    quint8 sigQuality;
     quint64 CP56Time;
+    quint8 sigQuality;
 };
 
 struct FloatStruct
 {
     quint32 sigAdr;
     float sigVal;
+    quint8 sigQuality;
 };
 
 struct SinglePointWithTimeStruct
@@ -76,6 +83,7 @@ struct SinglePointWithTimeStruct
     quint32 sigAdr;
     quint8 sigVal;
     quint64 CP56Time;
+    quint8 sigQuality;
 };
 
 struct BlockStruct
