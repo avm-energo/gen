@@ -21,14 +21,13 @@ include(DetermineTargetArchitecture)
 include(SetProjectTargetName)
 include(ExternalProject)
 
-target_architecture(PROJECT_ARCHITECTURE)
-set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
-
-if (MSVC)
-    message(STATUS "MSVC_C_ARCHITECTURE_ID: " ${MSVC_C_ARCHITECTURE_ID})
+if(NOT DEFINED PROJECT_ARCHITECTURE)
+    target_architecture(PROJECT_ARCHITECTURE)
+    set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
 endif()
-message(STATUS "Target architecture: ${PROJECT_ARCHITECTURE}")
-message(STATUS "Target name: ${PROJECT_TARGET_NAME}")
+
+message(STATUS "Gen target architecture: ${PROJECT_ARCHITECTURE}")
+message(STATUS "Gen target name: ${PROJECT_TARGET_NAME}")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
 
@@ -51,25 +50,13 @@ endif()
 
 message(STATUS "CMAKE_GENERATOR: " ${CMAKE_GENERATOR})
 
-if(${PROJECT_ARCHITECTURE} MATCHES "x86_64")
-  set(WINDOWS_TARGET_NAME "x64")
-elseif(${PROJECT_ARCHITECTURE} MATCHES "i386")
-  set(WINDOWS_TARGET_NAME "Win32")
+# Compile xz if we are on Windows
+if(PROJECT_TARGET_NAME MATCHES "win")
+    include(xz)
+    message("windows")
 else()
-  message(FATAL_ERROR "Invalid arch name: ${PROJECT_ARCHITECTURE}")
+    message("not windows")
 endif()
-
-if(CMAKE_GENERATOR MATCHES "Visual Studio")
-    set(CUSTOM_TARGET_PLATFORM_ARG "-A${WINDOWS_TARGET_NAME}")
-else()
-    set(CUSTOM_TARGET_GENERATOR "-G${CMAKE_GENERATOR}")
-  # Other stuff
-endif()
-
-message(STATUS "CUSTOM_TARGET_PLATFORM_ARG: " ${CUSTOM_TARGET_PLATFORM_ARG})
-message(STATUS "CUSTOM_TARGET_GENERATOR: " ${CUSTOM_TARGET_GENERATOR})
-
-include(xz)
 
 #------------------------------------------------------------------------------
 # Target
@@ -88,8 +75,14 @@ target_link_libraries(
   PRIVATE Qt${QT_VERSION_MAJOR}::Core
   PRIVATE Qt${QT_VERSION_MAJOR}::Xml
   PRIVATE Qt${QT_VERSION_MAJOR}::Network
-  PUBLIC xz
 )
+
+if(PROJECT_TARGET_NAME MATCHES "win")
+    target_link_libraries(${PROJECT_NAME} PUBLIC xz)
+else()
+    # using command: apt-get install liblzma-dev
+    target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
+endif()
 
 target_include_directories( ${PROJECT_NAME} PRIVATE . )
 
@@ -107,15 +100,11 @@ install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
     PATTERN "3rdParty" EXCLUDE
     PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
 
-# --- install liblzma libs and bins ---
-if(WIN32)
+# --- install liblzma libs, bins, includes ---
+if(PROJECT_TARGET_NAME MATCHES "win")
     set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin/liblzma.dll)
-else()
-    set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/lib/liblzma.so)
+    set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
 endif()
-install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-# --- install liblzma includes ---
-set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
-install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.."
-  FILES_MATCHING PATTERN "*.h")
+install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.." FILES_MATCHING PATTERN "*.h")
