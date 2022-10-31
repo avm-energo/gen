@@ -88,9 +88,9 @@ target_include_directories( ${PROJECT_NAME} PRIVATE . )
 
 # --- install libs and bins ---
 install(TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
+        LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
+        ARCHIVE DESTINATION ${CMAKE_BINARY_DIR}/lib
 )
 
 # --- install includes ---
