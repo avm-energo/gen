@@ -32,7 +32,7 @@ function(conan_install_dependencies TARGET_ARCH TARGET_NAME USER_DIR)
             execute_process(
                 COMMAND ${CONAN_INSTALL_COMMAND}
                 RESULT_VARIABLE CMD_ERROR
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             )
             message(STATUS "CMD_ERROR:" ${CMD_ERROR})
         else()

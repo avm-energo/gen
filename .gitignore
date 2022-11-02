@@ -2,7 +2,6 @@
 /output/*
 
 # C++ objects and libs
-
 *.slo
 *.lo
 *.o
@@ -14,7 +13,6 @@
 *.dylib
 
 # Qt-es
-
 **/.qmake.cache
 **/.qmake.stash
 *.pro.user
@@ -34,8 +32,8 @@ lib
 win*
 linux*
 unix*
-# QtCreator
 
+# QtCreator
 *.autosave
 
 #QtCtreator Qml
@@ -46,9 +44,7 @@ unix*
 **/.vs
 *.vcxproj.filters
 *.vcxproj.user
-
 *msvc_make.bat
-/conan*
 /graph_info.json
 /src/comaversion/gversion.h
 /src/bin*

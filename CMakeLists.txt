@@ -41,18 +41,19 @@ endif()
 ############################## Target definition ###############################
 #------------------------------------------------------------------------------#
 # Define target sources
-file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
+file(GLOB_RECURSE cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE private_headers ${PROJECT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE public_headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if (GEN_STATIC)
     message(STATUS "GEN STATIC LIBRARY")
-    add_library(${PROJECT_NAME} STATIC  ${files_h} ${files_cpp})
+    add_library(${PROJECT_NAME} STATIC ${public_headers} ${private_headers} ${cpp_sources})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAVE_STATIC_BUILD)
 else()
     message(STATUS "GEN SHARED LIBRARY")
-    add_library(${PROJECT_NAME} SHARED  ${files_h} ${files_cpp})
+    add_library(${PROJECT_NAME} SHARED ${public_headers} ${private_headers} ${cpp_sources})
     target_compile_definitions(${PROJECT_NAME} PRIVATE -DGEN_EXPORTS)
     target_compile_definitions(${PROJECT_NAME} INTERFACE -DGEN_IMPORTS)
 endif()
@@ -81,7 +82,12 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/files)
-target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
+#target_include_directories(${PROJECT_NAME}INTERFACE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(
+    ${PROJECT_NAME} INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include/gen>
+)
 
 # --- install libs and bins ---
 install(TARGETS ${PROJECT_NAME}
@@ -91,11 +97,16 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 # --- install includes ---
-install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
-    FILES_MATCHING
-    PATTERN "*.h"
-    PATTERN "3rdParty" EXCLUDE
-    PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
+install(FILES
+  ${public_headers}
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")
+
+# --- install includes ---
+#install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
+#    FILES_MATCHING
+#    PATTERN "*.h"
+#    PATTERN "3rdParty" EXCLUDE
+#    PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
 
 # --- install liblzma libs, bins, includes ---
 #if(PROJECT_TARGET_NAME MATCHES "win")
