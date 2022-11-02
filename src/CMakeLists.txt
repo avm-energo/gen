@@ -70,11 +70,17 @@ target_link_libraries(
 )
 
 if(PROJECT_TARGET_NAME MATCHES "win")
-    # Compile xz if we are on Windows
-    # include(xz)
-    target_link_libraries(${PROJECT_NAME} PUBLIC xz)
+    # Getting liblzma from conan xz_utils packet
+    find_package(LibLZMA)
+    if(LibLZMA_FOUND)
+        include_directories(${LibLZMA_INCLUDE_DIRS})
+        target_include_directories(${PROJECT_NAME} INTERFACE ${LibLZMA_INCLUDE_DIRS})
+        target_link_libraries(${PROJECT_NAME} PUBLIC LibLZMA::LibLZMA)
+    else()
+        message(FATAL_ERROR "liblzma not found, please install it manually!")
+    endif()
 else()
-    # using command: apt-get install liblzma-dev
+    # Getting liblzma from APT: apt-get install liblzma-dev
     target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
 endif()
 
@@ -96,10 +102,10 @@ install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
     PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
 
 # --- install liblzma libs, bins, includes ---
-if(PROJECT_TARGET_NAME MATCHES "win")
-    set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin/liblzma.dll)
-    set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
-    install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
-    install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.." FILES_MATCHING PATTERN "*.h")
-endif()
+#if(PROJECT_TARGET_NAME MATCHES "win")
+#    set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin/liblzma.dll)
+#    set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
+#    install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
+#    install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.." FILES_MATCHING PATTERN "*.h")
+#endif()
 
