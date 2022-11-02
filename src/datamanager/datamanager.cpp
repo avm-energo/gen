@@ -1,4 +1,4 @@
-#include "datamanager.h"
+#include "datamanager/datamanager.h"
 
 QMutex DataManager::s_inQueueMutex;
 std::queue<QVariant> DataManager::s_inputQueue;

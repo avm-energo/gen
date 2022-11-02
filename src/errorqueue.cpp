@@ -1,4 +1,5 @@
 #include "errorqueue.h"
+
 #define LOG_BUFFER_SIZE 1000
 
 ErrorQueue::ErrorQueue(Singleton::token)

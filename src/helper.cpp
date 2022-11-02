@@ -1,6 +1,7 @@
 #include "helper.h"
 
 #include "timefunc.h"
+
 QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st)
 {
     debug.nospace() << QString::number(st.sigAdr) << ":" << QString::number(st.sigVal, 16) << ":"

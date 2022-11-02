@@ -1,4 +1,4 @@
-#include "typesproxy.h"
+#include "datamanager/typesproxy.h"
 
 DataTypesProxy::DataTypesProxy(QObject *parent) : QObject(parent), hash_type(0)
 {

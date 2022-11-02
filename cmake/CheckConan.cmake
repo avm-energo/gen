@@ -26,17 +26,15 @@ function(conan_install_dependencies TARGET_ARCH TARGET_NAME USER_DIR)
             message(STATUS "Conan target: ${CONAN_TARGET_NAME}")
             message(STATUS "Conan profile: ${CONAN_PROFILE}")
 
-            set(CONAN_MAIN_INIT conan install . --profile ${CONAN_PROFILE} -g cmake_find_package -s arch=${CONAN_TARGET_NAME} -s arch_build=${CONAN_TARGET_NAME} -if ${CMAKE_BINARY_DIR} --build=missing)
+            set(CONAN_INSTALL_COMMAND conan install . --profile ${CONAN_PROFILE} -g cmake_find_package -s arch=${CONAN_TARGET_NAME} -s arch_build=${CONAN_TARGET_NAME} -if ${CMAKE_BINARY_DIR} --build=missing)
             message(STATUS "Conan exec command: ${CONAN_MAIN_INIT}")
-            if (NOT (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.txt"))
-                set(ENV{CONAN_USER_HOME} ${USER_DIR})
-                execute_process(
-                    COMMAND ${CONAN_MAIN_INIT}
-                    RESULT_VARIABLE CMD_ERROR
-                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/..
-                )
-                message(STATUS "CMD_ERROR:" ${CMD_ERROR})
-            endif()
+            set(ENV{CONAN_USER_HOME} ${USER_DIR})
+            execute_process(
+                COMMAND ${CONAN_INSTALL_COMMAND}
+                RESULT_VARIABLE CMD_ERROR
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            )
+            message(STATUS "CMD_ERROR:" ${CMD_ERROR})
         else()
             message(FATAL_ERROR "Invalid target architecture: ${TARGET_ARCH}")
         endif()

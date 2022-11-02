@@ -1,8 +1,8 @@
 #ifndef FILES_H
 #define FILES_H
 
-#include "../error.h"
-#include "../gen_export.h"
+#include "error.h"
+#include "gen_export.h"
 
 #include <QFile>
 

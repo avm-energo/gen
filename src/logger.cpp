@@ -1,7 +1,7 @@
 #include "logger.h"
 
 #include "errorqueue.h"
-#include "files/files.h"
+#include "files.h"
 #include "stdfunc.h"
 
 #include <iostream>

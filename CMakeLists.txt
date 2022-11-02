@@ -22,9 +22,6 @@ include(DetermineTargetArchitecture)
 include(SetProjectTargetName)
 include(CheckConan)
 
-# must delete
-#include(ExternalProject)
-
 find_package(QT NAMES Qt6 Qt5)
 find_package(
     Qt${QT_VERSION_MAJOR}
@@ -34,9 +31,6 @@ find_package(
 if(NOT DEFINED PROJECT_ARCHITECTURE)
     target_architecture(PROJECT_ARCHITECTURE)
     set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
-
-    #message(STATUS "Project target name: ${PROJECT_TARGET_NAME}")
-    #message(STATUS "User home directory: ${USER_DIRECTORY}")
 endif()
 
 if(PROJECT_TARGET_NAME MATCHES "win")
@@ -49,6 +43,8 @@ endif()
 # Define target sources
 file(GLOB_RECURSE files_cpp ${PROJECT_SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE files_h ${PROJECT_SOURCE_DIR}/*.h)
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if (GEN_STATIC)
     message(STATUS "GEN STATIC LIBRARY")
@@ -74,8 +70,8 @@ if(PROJECT_TARGET_NAME MATCHES "win")
     find_package(LibLZMA)
     if(LibLZMA_FOUND)
         include_directories(${LibLZMA_INCLUDE_DIRS})
-        target_include_directories(${PROJECT_NAME} INTERFACE ${LibLZMA_INCLUDE_DIRS})
-        target_link_libraries(${PROJECT_NAME} PUBLIC LibLZMA::LibLZMA)
+        #target_include_directories(${PROJECT_NAME} INTERFACE ${LibLZMA_INCLUDE_DIRS})
+        target_link_libraries(${PROJECT_NAME} PRIVATE LibLZMA::LibLZMA)
     else()
         message(FATAL_ERROR "liblzma not found, please install it manually!")
     endif()
@@ -84,8 +80,8 @@ else()
     target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE . )
-target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/files)
+target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
 
 # --- install libs and bins ---
 install(TARGETS ${PROJECT_NAME}

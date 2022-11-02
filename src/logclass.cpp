@@ -1,6 +1,6 @@
 #include "logclass.h"
 
-#include "files/files.h"
+#include "files.h"
 #include "stdfunc.h"
 
 #include <QDataStream>
