@@ -1,7 +1,7 @@
-#include "files.h"
+#include "gen/files.h"
 
+#include "gen/stdfunc.h"
 #include "lzma_util.h"
-#include "stdfunc.h"
 
 #include <QDirIterator>
 #include <QIODevice>

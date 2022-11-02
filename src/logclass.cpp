@@ -1,7 +1,7 @@
-#include "logclass.h"
+#include "gen/logclass.h"
 
-#include "files.h"
-#include "stdfunc.h"
+#include "gen/files.h"
+#include "gen/stdfunc.h"
 
 #include <QDataStream>
 #include <QDateTime>

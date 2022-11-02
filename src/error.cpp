@@ -1,4 +1,4 @@
-#include "error.h"
+#include "gen/error.h"
 
 QStringList &operator<<(QStringList &l, const ErrorMsg &obj)
 {

@@ -1,4 +1,4 @@
-#include "comaexception.h"
+#include "gen/comaexception.h"
 
 ComaException::ComaException(const QString &msg) : QException()
 {

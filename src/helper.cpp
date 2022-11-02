@@ -1,6 +1,6 @@
-#include "helper.h"
+#include "gen/helper.h"
 
-#include "timefunc.h"
+#include "gen/timefunc.h"
 
 QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st)
 {

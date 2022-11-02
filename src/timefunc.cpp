@@ -1,6 +1,6 @@
-#include "timefunc.h"
+#include "gen/timefunc.h"
 
-#include "settings.h"
+#include "gen/settings.h"
 
 #include <QDateTime>
 #include <QSettings>

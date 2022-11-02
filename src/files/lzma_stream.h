@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gen_export.h"
+#include "gen/gen_export.h"
 
 #include <QByteArray>
 #include <lzma.h>

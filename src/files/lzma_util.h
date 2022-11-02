@@ -1,7 +1,7 @@
 #pragma once
 
+#include "gen/singleton.h"
 #include "lzma_stream.h"
-#include "singleton.h"
 
 class GENLIB_EXPORT LzmaUtil : public Singleton<LzmaUtil>
 {

@@ -1,8 +1,8 @@
-#include "logger.h"
+#include "gen/logger.h"
 
-#include "errorqueue.h"
-#include "files.h"
-#include "stdfunc.h"
+#include "gen/errorqueue.h"
+#include "gen/files.h"
+#include "gen/stdfunc.h"
 
 #include <iostream>
 

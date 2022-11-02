@@ -1,7 +1,7 @@
-#include "stdfunc.h"
+#include "gen/stdfunc.h"
 
-#include "error.h"
-#include "pch.h"
+#include "gen/error.h"
+#include "gen/pch.h"
 
 #include <QCoreApplication>
 #include <QDataStream>

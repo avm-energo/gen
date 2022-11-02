@@ -1,4 +1,4 @@
-#include "errorqueue.h"
+#include "gen/errorqueue.h"
 
 #define LOG_BUFFER_SIZE 1000
 

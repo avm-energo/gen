@@ -82,12 +82,12 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/files)
-#target_include_directories(${PROJECT_NAME}INTERFACE ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(
-    ${PROJECT_NAME} INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/gen>
-)
+target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
+#target_include_directories(
+#    ${PROJECT_NAME} INTERFACE
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#    $<INSTALL_INTERFACE:include/gen>
+#)
 
 # --- install libs and bins ---
 install(TARGETS ${PROJECT_NAME}
