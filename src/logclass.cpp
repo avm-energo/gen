@@ -32,7 +32,7 @@ void LogClass::Init(const QString &Filename)
     StdFunc::GetSystemHomeDir() + Filename;
     // тестовая проверка открытия файла на запись
     fp = new QFile(StdFunc::GetSystemHomeDir() + Filename);
-    if (!fp->open(QIODevice::ReadWrite | QIODevice::Text))
+    if (!fp->open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append))
     {
         CanLog = false;
         qCritical("Ошибка открытия файла");

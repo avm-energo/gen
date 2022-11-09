@@ -113,8 +113,8 @@ void Files::checkNGzip(QFile *logFile)
             logFile->seek(0);
             auto bytes = logFile->readAll();
             auto compressed = lzma.compress(bytes);
-            auto wroten = fileOut.write(compressed);
-            if (wroten == -1)
+            auto written = fileOut.write(compressed);
+            if (written == -1)
                 qCritical("Writing gz file error");
             logFile->resize(0);
             logFile->flush();

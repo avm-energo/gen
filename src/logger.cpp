@@ -41,7 +41,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
     logFile.setFileName(fileName);
     out.setDevice(&logFile);
-    logFile.open(QFile::ReadWrite | QFile::Text);
+    logFile.open(QFile::ReadWrite | QFile::Text | QFile::Append);
     out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz "); // Log datetime
     out << msgTypes.value(type) << space << msg << Qt::endl;
     out.flush(); // Flush buffer
