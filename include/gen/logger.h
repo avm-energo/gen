@@ -14,7 +14,7 @@ class GENLIB_EXPORT Logger
 {
 public:
     void static messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-    void static writeStart();
+    void static writeStart(const QString &filename);
 
 protected:
     Logger() = delete;

@@ -104,25 +104,28 @@ QString Files::GetFirstDriveWithLabel(QStringList &filepaths, const QString &lab
 void Files::checkNGzip(QFile *logFile)
 {
     auto filename = logFile->fileName();
-    QFile fileOut(filename + ".0.gz");
-    if (logFile->size() >= LOG_MAX_SIZE && rotateGzipLogs(filename))
+    if (logFile->size() >= LOG_MAX_SIZE)
     {
-        if (fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        if (rotateGzipLogs(filename))
         {
-            auto &lzma = LzmaUtil::GetInstance();
-            logFile->seek(0);
-            auto bytes = logFile->readAll();
-            auto compressed = lzma.compress(bytes);
-            auto written = fileOut.write(compressed);
-            if (written == -1)
-                qCritical("Writing gz file error");
-            logFile->resize(0);
-            logFile->flush();
-            fileOut.flush();
-            fileOut.close();
+            QFile fileOut(filename + ".0.gz");
+            if (fileOut.open(QIODevice::WriteOnly | QIODevice::Truncate))
+            {
+                auto &lzma = LzmaUtil::GetInstance();
+                logFile->seek(0);
+                auto bytes = logFile->readAll();
+                auto compressed = lzma.compress(bytes);
+                auto wroten = fileOut.write(compressed);
+                if (wroten == -1)
+                    qCritical("Writing gz file error");
+                logFile->resize(0);
+                logFile->flush();
+                fileOut.flush();
+                fileOut.close();
+            }
+            else
+                qWarning() << "Cannot open the file" << fileOut.fileName();
         }
-        else
-            qWarning() << "Cannot open the file" << fileOut.fileName();
     }
 }
 

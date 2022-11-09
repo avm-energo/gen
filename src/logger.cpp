@@ -6,8 +6,6 @@
 
 #include <iostream>
 
-#define LOGFILE "coma.log"
-
 const static QMap<QtMsgType, const char *> msgTypes {
     { QtDebugMsg, "[DEBUG]" },       //
     { QtWarningMsg, "[WARNING]" },   //
@@ -16,13 +14,14 @@ const static QMap<QtMsgType, const char *> msgTypes {
     { QtInfoMsg, "[INFO]" }          //
 };
 
+static QString logfilename = "coma.log"; // имя по умолчанию
+
 void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     const char space = ' ';
     //    const char colon = ':';
     QStringList buffer = QString(context.file).split("\\");
     QString sourceFile = buffer.isEmpty() ? "" : buffer.takeLast();
-    QString fileName(StdFunc::GetSystemHomeDir() + LOGFILE);
     QFile logFile;
     QTextStream out;
 
@@ -39,7 +38,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
     };
     ErrorQueue::GetInstance().pushError(tmpm);
 
-    logFile.setFileName(fileName);
+    logFile.setFileName(logfilename);
     out.setDevice(&logFile);
     logFile.open(QFile::ReadWrite | QFile::Text | QFile::Append);
     out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz "); // Log datetime
@@ -49,13 +48,13 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
     Files::checkNGzip(&logFile);
 }
 
-void Logger::writeStart()
+void Logger::writeStart(const QString &filename)
 {
-    QString fileName(StdFunc::GetSystemHomeDir() + LOGFILE);
-    QFile logFile(fileName);
+    logfilename = filename;
+    QFile logFile(logfilename);
     QTextStream out;
     out.setDevice(&logFile);
-    logFile.open(QFile::ReadWrite | QFile::Text);
+    logFile.open(QFile::ReadWrite | QFile::Text | QFile::Append);
     out << "=====================================\nLog file started at "
         << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") + "\n"
         << QCoreApplication::applicationName() << " v." << QCoreApplication::applicationVersion();
