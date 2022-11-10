@@ -115,8 +115,8 @@ void Files::checkNGzip(QFile *logFile)
                 logFile->seek(0);
                 auto bytes = logFile->readAll();
                 auto compressed = lzma.compress(bytes);
-                auto wroten = fileOut.write(compressed);
-                if (wroten == -1)
+                auto written = fileOut.write(compressed);
+                if (written == -1)
                     qCritical("Writing gz file error");
                 logFile->resize(0);
                 logFile->flush();
@@ -150,4 +150,10 @@ bool Files::rotateGzipLogs(const QString &path)
         }
     }
     return true;
+}
+
+void Files::makePath(const QFile &path)
+{
+    QFileInfo fi(path);
+    QDir().mkpath(fi.dir().path());
 }

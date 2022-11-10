@@ -18,6 +18,7 @@ public:
     static QString GetFirstDriveWithLabel(QStringList &filepaths, const QString &label);
     static void checkNGzip(QFile *logFile);
     static bool rotateGzipLogs(const QString &path);
+    static void makePath(const QFile &path);
 };
 
 #endif // FILES_H
