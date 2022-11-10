@@ -21,11 +21,13 @@ const static QMap<QtMsgType, MsgDescr> msgTypes {
 
 static QString logfilename = "coma.log"; // имя по умолчанию
 Logger::LogLevels Logger::_logLevel = Logger::LogLevels::LOGLEVEL_WARN;
+// QMutex Logger::_locker;
 
 void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     if (_logLevel < msgTypes.value(type).loglevel)
         return;
+    QMutexLocker locker(&_mutex);
     const char space = ' ';
     //    const char colon = ':';
     QStringList buffer = QString(context.file).split("\\");
@@ -58,6 +60,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 
 void Logger::writeStart(const QString &filename)
 {
+    QMutexLocker locker(&_mutex);
     logfilename = filename;
     QFile logFile(logfilename);
     Files::makePath(logFile);

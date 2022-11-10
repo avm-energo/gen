@@ -32,4 +32,5 @@ protected:
 
 private:
     static LogLevels _logLevel;
+    static QMutex _mutex;
 };
