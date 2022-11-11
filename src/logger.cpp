@@ -11,6 +11,7 @@ struct MsgDescr
     Logger::LogLevels loglevel;
     const char *prefix;
 };
+
 const static QMap<QtMsgType, MsgDescr> msgTypes {
     { QtDebugMsg, { Logger::LogLevels::LOGLEVEL_DEBUG, "[DEBUG]" } },      //
     { QtWarningMsg, { Logger::LogLevels::LOGLEVEL_WARN, "[WARNING]" } },   //
@@ -19,9 +20,13 @@ const static QMap<QtMsgType, MsgDescr> msgTypes {
     { QtInfoMsg, { Logger::LogLevels::LOGLEVEL_INFO, "[INFO]" } }          //
 };
 
-static QString logfilename = "coma.log"; // имя по умолчанию
+const QMap<QString, Logger::LogLevels> _logLevelsMap = { { "Debug", Logger::LogLevels::LOGLEVEL_DEBUG },
+    { "Info", Logger::LogLevels::LOGLEVEL_INFO }, { "Fatal", Logger::LogLevels::LOGLEVEL_FATAL },
+    { "Warn", Logger::LogLevels::LOGLEVEL_WARN }, { "Error", Logger::LogLevels::LOGLEVEL_CRIT } };
+
+static QString logFilename = "coma.log"; // имя по умолчанию
 Logger::LogLevels Logger::_logLevel = Logger::LogLevels::LOGLEVEL_WARN;
-// QMutex Logger::_locker;
+QMutex Logger::_mutex;
 
 void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -48,7 +53,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
     };
     ErrorQueue::GetInstance().pushError(tmpm);
 
-    logFile.setFileName(logfilename);
+    logFile.setFileName(logFilename);
     out.setDevice(&logFile);
     logFile.open(QFile::ReadWrite | QFile::Text | QFile::Append);
     out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz "); // Log datetime
@@ -61,8 +66,8 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
 void Logger::writeStart(const QString &filename)
 {
     QMutexLocker locker(&_mutex);
-    logfilename = filename;
-    QFile logFile(logfilename);
+    logFilename = filename;
+    QFile logFile(logFilename);
     Files::makePath(logFile);
     QTextStream out;
     out.setDevice(&logFile);
@@ -78,6 +83,11 @@ void Logger::writeStart(const QString &filename)
 void Logger::setLogLevel(LogLevels level)
 {
     _logLevel = level;
+}
+
+void Logger::setLogLevel(const QString &level)
+{
+    _logLevel = _logLevelsMap.value(level);
 }
 
 /// Категории мы сейчас не используем, задел на будущее

@@ -26,6 +26,7 @@ public:
     void static messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     void static writeStart(const QString &filename);
     void static setLogLevel(LogLevels level);
+    void static setLogLevel(const QString &level);
 
 protected:
     Logger() = delete;
