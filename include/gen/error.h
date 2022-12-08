@@ -16,7 +16,7 @@
 /// \brief Namespace for critical message logging
 namespace Error
 {
-Q_NAMESPACE
+Q_NAMESPACE_EXPORT(GENLIB_EXPORT)
 
 /// Enumeration for possible errors in program runtime.
 enum Msg
