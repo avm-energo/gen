@@ -16,7 +16,7 @@
 /// \brief Namespace for critical message logging
 namespace Error
 {
-// Q_NAMESPACE
+Q_NAMESPACE
 
 /// Enumeration for possible errors in program runtime.
 enum Msg
@@ -69,7 +69,7 @@ const QMap<Msg, QString> MsgStr { { ResEmpty, "Пустой результат" 
     { FileOpenError, "Ошибка открытия файла" }, { FileWriteError, "Ошибка записи файла" },
     { UnknownError, "Неизвестная ошибка" } };
 
-// Q_ENUM_NS(Msg)
+Q_ENUM_NS(Msg)
 
 }
 Q_DECLARE_METATYPE(Error::Msg)

@@ -71,7 +71,6 @@ if(PROJECT_TARGET_NAME MATCHES "win")
     find_package(LibLZMA)
     if(LibLZMA_FOUND)
         include_directories(${LibLZMA_INCLUDE_DIRS})
-        #target_include_directories(${PROJECT_NAME} INTERFACE ${LibLZMA_INCLUDE_DIRS})
         target_link_libraries(${PROJECT_NAME} PRIVATE LibLZMA::LibLZMA)
     else()
         message(FATAL_ERROR "liblzma not found, please install it manually!")
@@ -83,36 +82,15 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/files)
 target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
-#target_include_directories(
-#    ${PROJECT_NAME} INTERFACE
-#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#    $<INSTALL_INTERFACE:include/gen>
-#)
 
-# --- install libs and bins ---
+# --- Install libs and binaries ---
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
 )
 
-# --- install includes ---
+# --- Install include headers ---
 install(FILES
   ${public_headers}
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")
-
-# --- install includes ---
-#install(DIRECTORY . DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}"
-#    FILES_MATCHING
-#    PATTERN "*.h"
-#    PATTERN "3rdParty" EXCLUDE
-#    PATTERN "${PROJECT_TARGET_NAME}" EXCLUDE)
-
-# --- install liblzma libs, bins, includes ---
-#if(PROJECT_TARGET_NAME MATCHES "win")
-#    set(LIBLZMA_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/bin/liblzma.dll)
-#    set(LIBLZMA_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/include)
-#    install(FILES ${LIBLZMA_PATH} DESTINATION ${CMAKE_INSTALL_BINDIR})
-#    install(DIRECTORY "${LIBLZMA_INCLUDE_PATH}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/.." FILES_MATCHING PATTERN "*.h")
-#endif()
-
