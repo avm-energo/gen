@@ -22,12 +22,10 @@ function(conan_install_dependencies TARGET_ARCH TARGET_NAME USER_DIR)
 
         # If conan's target was defined correctly
         if(CONAN_TARGET_FOUND)
-            message(STATUS "|----- Conan debug info:")
             message(STATUS "Conan target: ${CONAN_TARGET_NAME}")
             message(STATUS "Conan profile: ${CONAN_PROFILE}")
 
             set(CONAN_INSTALL_COMMAND conan install . --profile ${CONAN_PROFILE} -g cmake_find_package -s arch=${CONAN_TARGET_NAME} -s arch_build=${CONAN_TARGET_NAME} -if ${CMAKE_BINARY_DIR} --build=missing)
-            message(STATUS "Conan exec command: ${CONAN_MAIN_INIT}")
             set(ENV{CONAN_USER_HOME} ${USER_DIR})
             execute_process(
                 COMMAND ${CONAN_INSTALL_COMMAND}

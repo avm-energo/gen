@@ -20,7 +20,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(GNUInstallDirs)
 include(DetermineTargetArchitecture)
 include(SetProjectTargetName)
-include(CheckConan)
+include(ConanInstallDependencies)
 
 find_package(QT NAMES Qt6 Qt5)
 find_package(
@@ -34,7 +34,7 @@ if(NOT DEFINED PROJECT_ARCHITECTURE)
 endif()
 
 if(PROJECT_TARGET_NAME MATCHES "win")
-    conan_install_dependencies(PROJECT_ARCHITECTURE ${PROJECT_TARGET_NAME} ${USER_DIRECTORY})
+    conan_install_dependencies(${PROJECT_ARCHITECTURE} ${PROJECT_TARGET_NAME} ${USER_DIRECTORY})
 endif()
 
 #------------------------------------------------------------------------------#
