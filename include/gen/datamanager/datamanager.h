@@ -1,7 +1,4 @@
-#ifndef DATAMANAGER_H
-#define DATAMANAGER_H
-
-#include "../ct_hash.h"
+#pragma once
 #include "../error.h"
 #include "../singleton.h"
 
@@ -21,7 +18,7 @@ public:
     {
         QVariant data;
         data.setValue(signal);
-        constexpr auto hash = ct::hash<T> {}();
+        const auto hash = std::hash<std::string> {}(typeid(T).name());
         emit DataReceived(hash, data);
     }
 
@@ -65,7 +62,5 @@ private:
     QMutex s_inQueueMutex;
 
 signals:
-    void DataReceived(const std::uint64_t &, const QVariant &);
+    void DataReceived(const std::size_t &, const QVariant &);
 };
-
-#endif // DATAMANAGER_H
