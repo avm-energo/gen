@@ -1,5 +1,4 @@
-#ifndef FILES_H
-#define FILES_H
+#pragma once
 
 #include "error.h"
 #include "gen_export.h"
@@ -20,5 +19,3 @@ public:
     static bool rotateGzipLogs(const QString &path);
     static void makePath(const QFile &path);
 };
-
-#endif // FILES_H

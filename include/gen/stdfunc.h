@@ -1,6 +1,4 @@
-#ifndef STDFUNC_H
-#define STDFUNC_H
-
+#pragma once
 #include "gen_export.h"
 
 #include <QObject>
@@ -150,5 +148,3 @@ private:
     static int m_tuneRequestCount; ///< \private Степень усреднения для регулировки
     static bool Cancelled, s_cancelEnabled;
 };
-
-#endif // STDFUNC_H

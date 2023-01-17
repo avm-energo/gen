@@ -1,5 +1,4 @@
-#ifndef COMAEXCEPTION_H
-#define COMAEXCEPTION_H
+#pragma once
 
 #include "gen_export.h"
 
@@ -28,5 +27,3 @@ public:
 private:
     QString m_message;
 };
-
-#endif // COMAEXCEPTION_H

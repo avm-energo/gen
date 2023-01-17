@@ -1,5 +1,4 @@
-#ifndef DATATYPES_H
-#define DATATYPES_H
+#pragma once
 
 #include "uint24.h"
 
@@ -184,5 +183,3 @@ Q_DECLARE_METATYPE(DataTypes::SignalsStruct)
 Q_DECLARE_METATYPE(DataTypes::Signal)
 Q_DECLARE_METATYPE(DataTypes::GeneralResponseStruct)
 Q_DECLARE_METATYPE(Queries::Command)
-
-#endif // DATATYPES_H

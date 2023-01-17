@@ -1,5 +1,4 @@
-#ifndef GEN_EXPORT_H
-#define GEN_EXPORT_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -10,5 +9,3 @@
 #else
 #define GENLIB_EXPORT
 #endif
-
-#endif // GEN_EXPORT_H

@@ -1,16 +1,13 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
+#include "../ct_hash.h"
 #include "../error.h"
 #include "../singleton.h"
 
 #include <QMutex>
 #include <QVariant>
 #include <queue>
-
-#ifdef __linux__
-#include <time.h>
-#endif
 
 class GENLIB_EXPORT DataManager : public QObject, public Singleton<DataManager>
 {
@@ -24,7 +21,7 @@ public:
     {
         QVariant data;
         data.setValue(signal);
-        const auto hash = std::hash<std::string> {}(typeid(T).name());
+        constexpr auto hash = ct::hash<T> {}();
         emit DataReceived(hash, data);
     }
 
@@ -68,7 +65,7 @@ private:
     QMutex s_inQueueMutex;
 
 signals:
-    void DataReceived(const std::size_t &, const QVariant &);
+    void DataReceived(const std::uint64_t &, const QVariant &);
 };
 
 #endif // DATAMANAGER_H

@@ -1,6 +1,4 @@
-#ifndef LOG_H
-#define LOG_H
-
+#pragma once
 #include "gen_export.h"
 
 #include <QFile>
@@ -33,5 +31,3 @@ private:
     QFile *fp;
     QMutex *mtx;
 };
-
-#endif // LOG_H

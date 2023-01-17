@@ -1,5 +1,4 @@
 #pragma once
-
 #include "gen_export.h"
 
 #include <QLoggingCategory>

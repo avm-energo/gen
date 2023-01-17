@@ -1,6 +1,4 @@
-#ifndef TIMEFUNC_H
-#define TIMEFUNC_H
-
+#pragma once
 #include "gen_export.h"
 
 #include <QCoreApplication>
@@ -36,5 +34,3 @@ public:
     }
     static bool WaitFor(bool &flag, int timeoutms = TIMEOUT_MAIN);
 };
-
-#endif // TIMEFUNC_H
