@@ -1,58 +1,34 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include "../datatypes.h"
 #include "../error.h"
-#include "../gen_export.h"
 #include "../singleton.h"
 
 #include <QMutex>
-#include <QObject>
-#include <QQueue>
 #include <QVariant>
-#include <functional>
 #include <queue>
-#include <string>
-#include <variant>
 
 #ifdef __linux__
 #include <time.h>
 #endif
 
-Q_DECLARE_METATYPE(std::size_t);
-constexpr quint32 INQUEUEMAXSIZE = 100;
-
-template <class> inline constexpr bool always_false_v = false;
-
 class GENLIB_EXPORT DataManager : public QObject, public Singleton<DataManager>
 {
     Q_OBJECT
 public:
-    using RegisterType = std::variant<DataTypes::BitStringStruct, //
-        DataTypes::SinglePointWithTimeStruct,                     //
-        DataTypes::FloatStruct>;
-
-    explicit DataManager(token, QObject *parent = nullptr);
+    explicit DataManager(token, QObject *parent = nullptr) : QObject(parent)
+    {
+    }
 
     template <typename T> void addSignalToOutList(T &signal)
     {
-        if constexpr (std::is_same_v<T, DataTypes::FloatWithTimeStruct>)
-        {
-            DataTypes::FloatStruct fl;
-            fl.sigAdr = signal.sigAdr;
-            fl.sigVal = signal.sigVal;
-            insertRegister(fl);
-        }
-        else
-            insertRegister(signal);
         QVariant data;
         data.setValue(signal);
-        std::string type_name = typeid(T).name();
-        auto hash = std::hash<std::string> {}(type_name);
+        const auto hash = std::hash<std::string> {}(typeid(T).name());
         emit DataReceived(hash, data);
     }
 
-    template <typename T> static void addToInQueue(T data)
+    template <typename T> void addToInQueue(T data)
     {
         QVariant var;
         var.setValue(data);
@@ -60,7 +36,7 @@ public:
         s_inputQueue.push(var);
     }
 
-    template <typename T> static Error::Msg deQueue(T &cmd)
+    template <typename T> Error::Msg deQueue(T &cmd)
     {
         QMutexLocker locker(&s_inQueueMutex);
         if (!s_inputQueue.empty())
@@ -76,56 +52,20 @@ public:
         return Error::Msg::ResEmpty;
     }
 
-    static size_t queueSize()
+    const size_t queueSize() const
     {
         return s_inputQueue.size();
     }
 
-    static void clearQueue()
+    void clearQueue()
     {
         decltype(s_inputQueue) empty;
         std::swap(s_inputQueue, empty);
-        GetInstance().m_registers.clear();
-    }
-
-    bool containsRegister(quint32 addr) const
-    {
-        QMutexLocker locker(&s_inQueueMutex);
-        return m_registers.contains(addr);
-    }
-
-    template <typename T> bool containsRegister(quint32 addr) const
-    {
-        if (containsRegister(addr))
-        {
-            QMutexLocker locker(&s_inQueueMutex);
-            return std::holds_alternative<T>(m_registers.value(addr));
-        }
-        return false;
-    }
-
-    template <typename T> T getRegister(quint32 addr) const
-    {
-        Q_ASSERT(containsRegister<T>(addr));
-        QMutexLocker locker(&s_inQueueMutex);
-        return std::get<T>(m_registers.value(addr));
     }
 
 private:
-    static std::queue<QVariant> s_inputQueue;
-    static QMutex s_inQueueMutex;
-    QMap<quint32, RegisterType> m_registers;
-
-    template <typename T> void insertRegister(T value)
-    {
-        QMutexLocker locker(&s_inQueueMutex);
-        if constexpr ((std::is_same_v<T, DataTypes::BitStringStruct>)    //
-            || (std::is_same_v<T, DataTypes::SinglePointWithTimeStruct>) //
-            || (std::is_same_v<T, DataTypes::FloatStruct>))              //
-        {
-            m_registers.insert(value.sigAdr, value);
-        }
-    }
+    std::queue<QVariant> s_inputQueue;
+    QMutex s_inQueueMutex;
 
 signals:
     void DataReceived(const std::size_t &, const QVariant &);
