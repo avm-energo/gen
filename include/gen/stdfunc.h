@@ -39,6 +39,7 @@ using enable_if_pod = typename std::enable_if<std::is_trivial<T>::value && std::
 
 constexpr int defaultRatio = 3;
 constexpr int maxRatio = 5;
+constexpr auto resourceDirectory = ":/module";
 
 /*! \brief Class contains most frequently used general purpose functions
  *  \details That class contains static general purpose functions
