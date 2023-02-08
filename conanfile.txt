@@ -1,6 +1,0 @@
-[requires]
-xz_utils/5.2.5
-
-[options]
-hidapi:shared=True
-    
