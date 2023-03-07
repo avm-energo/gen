@@ -37,7 +37,8 @@ enum Msg
     WrongType = 0x0b,         ///< Test10
     FileNameError = 0x0c,     ///< Test11
     WrongBlockAC = 0x0d,      ///< Test12
-    DescError,                ///< Test13
+    DescError = 0x0f,         ///< Test13
+    StartupInitError = 0x10,  ///< Error startup values initialization
     HeaderSizeError,          ///< Test14
     NoIdError,                ///< Test15
     NoConfError,              ///< Test16
@@ -61,9 +62,9 @@ const QMap<Msg, QString> MsgStr { { ResEmpty, "Пустой результат" 
     { UnknownBlock, "Неизвестный блок данных" }, { UnknownFileReq, "Запрошен неизвестный файл" },
     { UnknownFileSent, "Отправлен неизвестный файл" }, { NoMezzanine, "Нет мезонина" },
     { WrongType, "Неверный тип платы" }, { FileNameError, "Нет такого файла" }, { WrongBlockAC, "Ошибка блока Bac" },
-    { DescError, "Ошибка описания S2" }, { HeaderSizeError, "Неверный размер заголовка S2" },
-    { NoIdError, "Нет такого ИД S2" }, { NoConfError, "Нет конфигурации" },
-    { NoTuneError, "Нет настроечных параметров" }, { WriteError, "Ошибка записи" },
+    { DescError, "Ошибка описания S2" }, { StartupInitError, "Ошибка задания начальных значений" },
+    { HeaderSizeError, "Неверный размер заголовка S2" }, { NoIdError, "Нет такого ИД S2" },
+    { NoConfError, "Нет конфигурации" }, { NoTuneError, "Нет настроечных параметров" }, { WriteError, "Ошибка записи" },
     { NoDeviceError, "Нет такого устройства" }, { ReadError, "Ошибка чтения" }, { OpenError, "Ошибка открытия порта" },
     { NullDataError, "Приняты нулевые данные" }, { FileNameError, "Ошибка номера файла" },
     { FileOpenError, "Ошибка открытия файла" }, { FileWriteError, "Ошибка записи файла" },
