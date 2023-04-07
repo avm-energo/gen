@@ -140,7 +140,7 @@ enum Commands
     //    QC_ClearStartupPhaseA,
     //    QC_ClearStartupPhaseB,
     //    QC_ClearStartupPhaseC,
-    //    QC_ClearStartupUnbounced,
+    QC_ClearStartupUnbounced,
     QC_ClearStartupError,
     QC_Command50,
     QC_Test,
