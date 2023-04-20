@@ -1,8 +1,3 @@
-#include "gen/stdfunc.h"
-
-#include "gen/error.h"
-#include "gen/pch.h"
-
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDateTime>
@@ -18,6 +13,9 @@
 #include <QTextStream>
 #include <QThread>
 #include <QTimer>
+#include <gen/error.h>
+#include <gen/pch.h>
+#include <gen/stdfunc.h>
 
 QString StdFunc::HomeDir = "";       // Рабочий каталог программы
 QString StdFunc::SystemHomeDir = ""; // Системный каталог программы

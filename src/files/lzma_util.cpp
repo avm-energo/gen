@@ -1,6 +1,5 @@
-#include "lzma_util.h"
-
 #include <QDebug>
+#include <gen/lzma_util.h>
 
 constexpr auto bufferSize = BUFSIZ;
 

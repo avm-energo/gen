@@ -1,6 +1,6 @@
-#include "gen/errorqueue.h"
+#include <gen/errorqueue.h>
 
-#define LOG_BUFFER_SIZE 1000
+constexpr auto LOG_BUFFER_SIZE = 1000;
 
 ErrorQueue::ErrorQueue(Singleton::token)
 {

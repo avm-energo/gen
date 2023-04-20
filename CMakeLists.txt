@@ -41,18 +41,17 @@ endif()
 #------------------------------------------------------------------------------#
 # Define target sources
 file(GLOB_RECURSE cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file(GLOB_RECURSE private_headers ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB_RECURSE public_headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 if (GEN_STATIC)
     message(STATUS "GEN STATIC LIBRARY")
-    add_library(${PROJECT_NAME} STATIC ${public_headers} ${private_headers} ${cpp_sources})
+    add_library(${PROJECT_NAME} STATIC ${public_headers} ${cpp_sources})
     target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAVE_STATIC_BUILD)
 else()
     message(STATUS "GEN SHARED LIBRARY")
-    add_library(${PROJECT_NAME} SHARED ${public_headers} ${private_headers} ${cpp_sources})
+    add_library(${PROJECT_NAME} SHARED ${public_headers} ${cpp_sources})
     target_compile_definitions(${PROJECT_NAME} PRIVATE -DGEN_EXPORTS)
     target_compile_definitions(${PROJECT_NAME} INTERFACE -DGEN_IMPORTS)
 endif()
@@ -79,7 +78,6 @@ else()
     target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src/files)
 target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
 
 # --- Install libs and binaries ---

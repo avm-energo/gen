@@ -1,13 +1,11 @@
-#include "gen/logclass.h"
-
-#include "gen/files.h"
-#include "gen/stdfunc.h"
-
 #include <QDataStream>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
+#include <gen/files.h>
+#include <gen/logclass.h>
+#include <gen/stdfunc.h>
 
 LogClass::LogClass(QObject *parent) : QObject(parent)
 {
