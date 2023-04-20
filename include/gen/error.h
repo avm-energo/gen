@@ -51,6 +51,7 @@ enum Msg
     WrongFileError,           ///< Test23
     FileOpenError,            ///< Test24
     FileWriteError,           ///< Test25
+    Cancelled,                ///< Tune process was cancelled
     UnknownError = 0xff       ///< Test26
 };
 
@@ -68,7 +69,7 @@ const QMap<Msg, QString> MsgStr { { ResEmpty, "Пустой результат" 
     { NoDeviceError, "Нет такого устройства" }, { ReadError, "Ошибка чтения" }, { OpenError, "Ошибка открытия порта" },
     { NullDataError, "Приняты нулевые данные" }, { FileNameError, "Ошибка номера файла" },
     { FileOpenError, "Ошибка открытия файла" }, { FileWriteError, "Ошибка записи файла" },
-    { UnknownError, "Неизвестная ошибка" } };
+    { Cancelled, "Операция прервана" }, { UnknownError, "Неизвестная ошибка" } };
 
 Q_ENUM_NS(Msg)
 
