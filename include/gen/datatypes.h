@@ -52,6 +52,13 @@ enum GeneralResponseTypes
     DataCount
 };
 
+enum FileFormat : quint32
+{
+    Binary = 0,
+    DefaultS2 = 1,
+    CustomS2
+};
+
 struct BitStringStruct
 {
     //    quint8 sigAdr[3];
@@ -121,66 +128,6 @@ struct SingleCommand
 
 }
 
-namespace Queries
-{
-enum Commands
-{
-    QC_Unknown, // NOTE Temporary warn command
-    QC_SetNewConfiguration,
-    QC_StartFirmwareUpgrade,
-    QC_StartWorkingChannel,
-    QC_EraseJournals,
-    QC_SetStartupValues,
-    QC_SetStartupPhaseA,
-    QC_SetStartupPhaseB,
-    QC_SetStartupPhaseC,
-    QC_SetStartupUnbounced,
-    QC_SetTransOff,
-    QC_ClearStartupValues,
-    //    QC_ClearStartupPhaseA,
-    //    QC_ClearStartupPhaseB,
-    //    QC_ClearStartupPhaseC,
-    QC_ClearStartupUnbounced,
-    QC_ClearStartupError,
-    QC_Command50,
-    QC_Test,
-    QC_EraseTechBlock,
-    QC_WriteHiddenBlock,
-    QC_WriteUserValues,
-    QC_ReqAlarms,
-    QC_ReqFloats,
-    QC_ReqBitStrings,
-    QC_WriteSingleCommand,
-    QUSB_ReqTuningCoef,
-    QUSB_WriteTuningCoef,
-    QUSB_WriteBlkData,
-    QUSB_ReqBlkData,
-    QUSB_ReqBlkDataA,
-    QUSB_ReqBlkDataTech,
-    QUSB_WriteBlkDataTech,
-    QUSB_Reboot,
-    QUSB_ReqOscInfo,
-    QUSB_SetMode,
-    QUSB_GetMode,
-    QUSB_WriteHardware
-};
-
-struct Command
-{
-    Commands cmd;
-    quint32 uintarg;
-    float flarg;
-    QByteArray ba;
-};
-
-enum FileFormat : quint32
-{
-    Binary = 0,
-    DefaultS2 = 1,
-    CustomS2
-};
-}
-
 Q_DECLARE_METATYPE(DataTypes::SingleCommand)
 Q_DECLARE_METATYPE(uint24)
 Q_DECLARE_METATYPE(DataTypes::BitStringStruct)
@@ -192,4 +139,3 @@ Q_DECLARE_METATYPE(DataTypes::S2FilePack)
 Q_DECLARE_METATYPE(DataTypes::SignalsStruct)
 Q_DECLARE_METATYPE(DataTypes::Signal)
 Q_DECLARE_METATYPE(DataTypes::GeneralResponseStruct)
-Q_DECLARE_METATYPE(Queries::Command)
