@@ -42,7 +42,7 @@ Error::Msg Files::LoadFromFile(const QString &filename, QByteArray &ba)
 Error::Msg Files::SaveToFile(const QString &filename, const QByteArray &src)
 {
     if (filename.isEmpty())
-        return Error::Msg::NoError; // Пустое имя файла
+        return Error::Msg::FileNameError; // Пустое имя файла
     std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
     file->setFileName(filename);
     if (!file->open(QIODevice::WriteOnly))
