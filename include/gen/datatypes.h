@@ -3,6 +3,8 @@
 #include "uint24.h"
 
 #include <QVariant>
+#include <array>
+#include <variant>
 
 #ifdef __linux__
 #include <ctime>
@@ -50,6 +52,13 @@ enum GeneralResponseTypes
     Error,
     DataSize,
     DataCount
+};
+
+enum FileFormat : quint32
+{
+    Binary = 0,
+    DefaultS2 = 1,
+    CustomS2
 };
 
 struct BitStringStruct
@@ -119,66 +128,48 @@ struct SingleCommand
     bool value;
 };
 
-}
+using BYTE = uint8_t;
+using WORD = uint16_t;
+using DWORD = uint32_t;
+using INT32 = int32_t;
+using BYTE_4t = std::array<BYTE, 4>;
+using WORD_4t = std::array<WORD, 4>;
+using DWORD_4t = std::array<DWORD, 4>;
+using BYTE_6t = std::array<BYTE, 6>;
+using WORD_6t = std::array<WORD, 6>;
+using DWORD_6t = std::array<DWORD, 6>;
+using BYTE_8t = std::array<BYTE, 8>;
+using WORD_8t = std::array<WORD, 8>;
+using DWORD_8t = std::array<DWORD, 8>;
+using BYTE_16t = std::array<BYTE, 16>;
+using WORD_16t = std::array<WORD, 16>;
+using DWORD_16t = std::array<DWORD, 16>;
+using BYTE_32t = std::array<BYTE, 32>;
+using WORD_32t = std::array<WORD, 32>;
+using DWORD_32t = std::array<DWORD, 32>;
+using FLOAT = float;
+using FLOAT_2t = std::array<FLOAT, 2>;
+using FLOAT_3t = std::array<FLOAT, 3>;
+using FLOAT_4t = std::array<FLOAT, 4>;
+using FLOAT_6t = std::array<FLOAT, 6>;
+using FLOAT_8t = std::array<FLOAT, 8>;
 
-namespace Queries
-{
-enum Commands
-{
-    QC_Unknown, // NOTE Temporary warn command
-    QC_SetNewConfiguration,
-    QC_StartFirmwareUpgrade,
-    QC_StartWorkingChannel,
-    QC_EraseJournals,
-    QC_SetStartupValues,
-    QC_SetStartupPhaseA,
-    QC_SetStartupPhaseB,
-    QC_SetStartupPhaseC,
-    QC_SetStartupUnbounced,
-    QC_SetTransOff,
-    QC_ClearStartupValues,
-    //    QC_ClearStartupPhaseA,
-    //    QC_ClearStartupPhaseB,
-    //    QC_ClearStartupPhaseC,
-    QC_ClearStartupUnbounced,
-    QC_ClearStartupError,
-    QC_Command50,
-    QC_Test,
-    QC_EraseTechBlock,
-    QC_WriteHiddenBlock,
-    QC_WriteUserValues,
-    QC_ReqAlarms,
-    QC_ReqFloats,
-    QC_ReqBitStrings,
-    QC_WriteSingleCommand,
-    QUSB_ReqTuningCoef,
-    QUSB_WriteTuningCoef,
-    QUSB_WriteBlkData,
-    QUSB_ReqBlkData,
-    QUSB_ReqBlkDataA,
-    QUSB_ReqBlkDataTech,
-    QUSB_WriteBlkDataTech,
-    QUSB_Reboot,
-    QUSB_ReqOscInfo,
-    QUSB_SetMode,
-    QUSB_GetMode,
-    QUSB_WriteHardware
-};
+static_assert(sizeof(BYTE) != sizeof(WORD), "Broken datatypes");
+static_assert(sizeof(BYTE) != sizeof(DWORD), "Broken datatypes");
+static_assert(sizeof(INT32) == sizeof(DWORD), "Broken datatypes");
+static_assert(sizeof(FLOAT) == sizeof(DWORD), "Broken datatypes");
+static_assert(sizeof(WORD_4t) == sizeof(BYTE_8t), "Broken datatypes");
+static_assert(sizeof(DWORD_4t) == sizeof(BYTE_16t), "Broken datatypes");
+static_assert(sizeof(FLOAT_2t) == sizeof(BYTE_8t), "Broken datatypes");
 
-struct Command
-{
-    Commands cmd;
-    quint32 uintarg;
-    float flarg;
-    QByteArray ba;
-};
+using valueType = std::variant<BYTE, WORD, DWORD, INT32, //
+    BYTE_4t, WORD_4t, DWORD_4t,                          //
+    BYTE_6t, WORD_6t, DWORD_6t,                          //
+    BYTE_8t, WORD_8t, DWORD_8t,                          //
+    BYTE_16t, WORD_16t, DWORD_16t,                       //
+    BYTE_32t, WORD_32t, DWORD_32t,                       //
+    FLOAT, FLOAT_2t, FLOAT_3t, FLOAT_4t, FLOAT_6t, FLOAT_8t>;
 
-enum FileFormat : quint32
-{
-    Binary = 0,
-    DefaultS2 = 1,
-    CustomS2
-};
 }
 
 Q_DECLARE_METATYPE(DataTypes::SingleCommand)
@@ -192,4 +183,3 @@ Q_DECLARE_METATYPE(DataTypes::S2FilePack)
 Q_DECLARE_METATYPE(DataTypes::SignalsStruct)
 Q_DECLARE_METATYPE(DataTypes::Signal)
 Q_DECLARE_METATYPE(DataTypes::GeneralResponseStruct)
-Q_DECLARE_METATYPE(Queries::Command)

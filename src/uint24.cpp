@@ -39,6 +39,11 @@ uint24::operator uint32_t() const
         return (value[2] << 16) | (value[1] << 8) | value[0];
 }
 
+quint16 uint24::toU16() const
+{
+    return (value[1] << 8) | value[0];
+}
+
 uint24 uint24::operator+(const uint24 &val) const
 {
     return uint24((uint32_t) * this + (uint32_t)val);

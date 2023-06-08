@@ -36,6 +36,7 @@ public:
     bool operator<=(const uint24 &val) const;
 
     /* Define all operations you need below.. */
+    quint16 toU16() const;
 };
 
 class ui24
