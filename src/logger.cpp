@@ -55,7 +55,7 @@ void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, c
     out.setDevice(&logFile);
     logFile.open(QFile::ReadWrite | QFile::Text | QFile::Append);
     out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz "); // Log datetime
-    out << msgTypes.value(type).prefix << space << msg << Qt::endl;
+    out << msgTypes.value(type).prefix << space << msg << "\n";
     out.flush(); // Flush buffer
     // logFile.close();
     Files::checkNGzip(&logFile);
