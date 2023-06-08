@@ -16,7 +16,11 @@
 /// \brief Namespace for critical message logging
 namespace Error
 {
+#ifdef HAVE_STATIC_BUILD
+Q_NAMESPACE
+#else
 Q_NAMESPACE_EXPORT(GENLIB_EXPORT)
+#endif
 
 /// Enumeration for possible errors in program runtime.
 enum Msg
