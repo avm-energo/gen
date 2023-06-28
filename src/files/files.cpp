@@ -27,36 +27,41 @@ Error::Msg Files::LoadFromFile(const QString &filename, QByteArray &ba)
         qCritical("Пустое имя файла");
         return Error::Msg::FileNameError; // Пустое имя файла
     }
-    std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
-    file->setFileName(filename);
-    if (!file->open(QIODevice::ReadOnly))
+    // std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
+    // file->setFileName(filename);
+    QFile file(filename); // QFile must be allocated on stack
+    if (!file.open(QIODevice::ReadOnly))
     {
         qCritical("Ошибка открытия файла");
         return Error::Msg::FileOpenError; // Ошибка открытия файла
     }
-    ba = file->readAll();
-    file->close();
+    ba = file.readAll();
+    file.close();
     return Error::Msg::NoError;
 }
 
 Error::Msg Files::SaveToFile(const QString &filename, const QByteArray &src)
 {
     if (filename.isEmpty())
+    {
+        qCritical("Пустое имя файла");
         return Error::Msg::FileNameError; // Пустое имя файла
-    std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
-    file->setFileName(filename);
-    if (!file->open(QIODevice::WriteOnly))
+    }
+    // std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
+    // file->setFileName(filename);
+    QFile file(filename); // QFile must be allocated on stack
+    if (!file.open(QIODevice::WriteOnly))
         return Error::Msg::FileOpenError; // Ошибка открытия файла
-    if (file->write(src, src.size()) != -1)
+    if (file.write(src, src.size()) != -1)
     {
         // нет ошибок
-        file->close();
+        file.close();
         return Error::Msg::NoError;
     }
     else
     {
         // ошибка записи
-        file->close();
+        file.close();
         return Error::Msg::FileWriteError;
     }
 }
