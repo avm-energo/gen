@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
-#include <gen/files/files.h>
+#include <gen/files.h>
 #include <gen/logclass.h>
 #include <gen/stdfunc.h>
 
