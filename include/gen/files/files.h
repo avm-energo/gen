@@ -1,9 +1,8 @@
 #pragma once
 
-#include "error.h"
-#include "gen_export.h"
-
 #include <QFile>
+#include <gen/error.h>
+#include <gen/gen_export.h>
 
 class GENLIB_EXPORT Files
 {

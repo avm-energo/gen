@@ -2,8 +2,8 @@
 #include <QIODevice>
 #include <QStorageInfo>
 #include <QtDebug>
-#include <gen/files.h>
-#include <gen/lzma_util.h>
+#include <gen/files/files.h>
+#include <gen/files/lzma_util.h>
 #include <gen/stdfunc.h>
 
 constexpr auto LOG_MAX_SIZE = 1048576;
