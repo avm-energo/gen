@@ -1,9 +1,8 @@
 #pragma once
 
-#include "uint24.h"
-
 #include <QVariant>
 #include <array>
+#include <gen/uint24.h>
 #include <variant>
 
 #ifdef __linux__

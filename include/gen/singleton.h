@@ -1,7 +1,8 @@
 #pragma once
-#include "gen_export.h"
 
+#include <gen/gen_export.h>
 #include <memory>
+
 /*! \brief Basic class for singleton pattern designed classes.
  *
  *  ## See also:

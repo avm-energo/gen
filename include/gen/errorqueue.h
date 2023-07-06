@@ -1,10 +1,10 @@
 #pragma once
 
-#include "error.h"
-#include "gen_export.h"
-#include "singleton.h"
-
+#include <gen/error.h>
+#include <gen/gen_export.h>
+#include <gen/singleton.h>
 #include <vector>
+
 class GENLIB_EXPORT ErrorQueue : public QObject, public Singleton<ErrorQueue>
 {
     Q_OBJECT

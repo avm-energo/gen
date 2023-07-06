@@ -27,8 +27,6 @@ Error::Msg Files::LoadFromFile(const QString &filename, QByteArray &ba)
         qCritical("Пустое имя файла");
         return Error::Msg::FileNameError; // Пустое имя файла
     }
-    // std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
-    // file->setFileName(filename);
     QFile file(filename); // QFile must be allocated on stack
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -47,8 +45,6 @@ Error::Msg Files::SaveToFile(const QString &filename, const QByteArray &src)
         qCritical("Пустое имя файла");
         return Error::Msg::FileNameError; // Пустое имя файла
     }
-    // std::unique_ptr<QFile> file = std::unique_ptr<QFile>(new QFile);
-    // file->setFileName(filename);
     QFile file(filename); // QFile must be allocated on stack
     if (!file.open(QIODevice::WriteOnly))
         return Error::Msg::FileOpenError; // Ошибка открытия файла

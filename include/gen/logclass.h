@@ -1,10 +1,11 @@
 #pragma once
-#include "gen_export.h"
 
 #include <QFile>
 #include <QMutex>
+#include <gen/gen_export.h>
 
 #define LOG_MAX_SIZE 1048576
+
 namespace
 {
 constexpr char logStart[] = "=== Log started ===\n";

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "gen_export.h"
-
 #include <QException>
 #include <QMap>
 #include <QObject>
+#include <gen/gen_export.h>
 
 class GENLIB_EXPORT ComaException : public QException
 {
@@ -17,6 +16,7 @@ public:
     {
         throw *this;
     }
+
     ComaException *clone() const override
     {
         return new ComaException(*this);

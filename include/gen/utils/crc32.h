@@ -1,12 +1,13 @@
 #pragma once
 
 #include <QByteArray>
+#include <gen/gen_export.h>
 
 namespace utils
 {
 
 /// \brief Класс, реализующий подсчёт контрольной суммы CRC32.
-class CRC32
+class GENLIB_EXPORT CRC32
 {
 private:
     static const quint32 table[256];

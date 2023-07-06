@@ -1,11 +1,10 @@
 #pragma once
 
-#include "gen_export.h"
-
 #include <QDebug>
 #include <QMap>
 #include <QObject>
 #include <QString>
+#include <gen/gen_export.h>
 
 // Макросы для выдачи сообщений
 #define ERMSG qCritical

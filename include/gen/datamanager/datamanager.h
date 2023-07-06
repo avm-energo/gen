@@ -1,9 +1,9 @@
 #pragma once
-#include "../error.h"
-#include "../singleton.h"
 
 #include <QMutex>
 #include <QVariant>
+#include <gen/error.h>
+#include <gen/singleton.h>
 #include <queue>
 
 class GENLIB_EXPORT DataManager : public QObject, public Singleton<DataManager>

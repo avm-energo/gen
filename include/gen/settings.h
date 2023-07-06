@@ -1,5 +1,6 @@
 #pragma once
-#include "datatypes.h"
+
+#include <gen/datatypes.h>
 
 namespace settings
 {

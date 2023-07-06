@@ -1,9 +1,9 @@
 #pragma once
-#include "../gen_export.h"
-#include "datamanager.h"
 
 #include <QDebug>
 #include <algorithm>
+#include <gen/datamanager/datamanager.h>
+#include <gen/gen_export.h>
 #include <typeinfo>
 
 /*! \details That class represents a connection between datamanager and classes (user classes) that usage datamanager.

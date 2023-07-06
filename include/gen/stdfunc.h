@@ -1,10 +1,10 @@
 #pragma once
-#include "gen_export.h"
 
 #include <QObject>
 #include <QString>
 #include <cmath>
 #include <functional>
+#include <gen/gen_export.h>
 #include <memory>
 #include <type_traits>
 

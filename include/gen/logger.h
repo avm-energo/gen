@@ -1,8 +1,8 @@
 #pragma once
-#include "gen_export.h"
 
 #include <QLoggingCategory>
 #include <QtCore>
+#include <gen/gen_export.h>
 
 Q_DECLARE_LOGGING_CATEGORY(logDebug)
 Q_DECLARE_LOGGING_CATEGORY(logInfo)

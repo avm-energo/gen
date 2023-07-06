@@ -1,9 +1,9 @@
 #pragma once
-#include "gen_export.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QTimeZone>
+#include <gen/gen_export.h>
 
 #define SLEEPINT 20
 #define TIMEOUT_MAIN 2000

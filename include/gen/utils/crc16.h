@@ -1,12 +1,13 @@
 #pragma once
 
 #include <QByteArray>
+#include <gen/gen_export.h>
 
 namespace utils
 {
 
 /// \brief Класс, реализующий подсчёт контрольной суммы CRC16.
-class CRC16
+class GENLIB_EXPORT CRC16
 {
 private:
     static const quint8 hiTable[256];

@@ -1,8 +1,8 @@
 #pragma once
-#include "gen_export.h"
 
 #include <bitset>
 #include <cstdint>
+#include <gen/gen_export.h>
 
 constexpr unsigned int UINT24_MAX = 16777215;
 

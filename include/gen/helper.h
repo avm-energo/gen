@@ -1,9 +1,9 @@
 #pragma once
-#include "datatypes.h"
-#include "gen_export.h"
 
 #include <QDebug>
 #include <bitset>
+#include <gen/datatypes.h>
+#include <gen/gen_export.h>
 
 GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::BitStringStruct &st);
 GENLIB_EXPORT QDebug operator<<(QDebug debug, const DataTypes::FloatWithTimeStruct &st);
