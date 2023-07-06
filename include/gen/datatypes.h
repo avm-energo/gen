@@ -2,6 +2,7 @@
 
 #include <QVariant>
 #include <array>
+#include <gen/std_ext.h>
 #include <gen/uint24.h>
 #include <variant>
 
@@ -171,8 +172,13 @@ using valueType = std::variant<BYTE, WORD, DWORD, INT32, //
 
 }
 
+template <typename T> struct isValueType
+{
+    static constexpr bool value = std_ext::is_variant_alternative<T, DataTypes::valueType>();
+};
+
+Q_DECLARE_METATYPE(uint24);
 Q_DECLARE_METATYPE(DataTypes::SingleCommand)
-Q_DECLARE_METATYPE(uint24)
 Q_DECLARE_METATYPE(DataTypes::BitStringStruct)
 Q_DECLARE_METATYPE(DataTypes::FloatWithTimeStruct)
 Q_DECLARE_METATYPE(DataTypes::FloatStruct)
