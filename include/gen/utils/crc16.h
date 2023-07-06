@@ -37,19 +37,19 @@ public:
 
     /// \brief Оператор приведения к типу quint16.
     operator quint16() const noexcept;
-    friend bool operator==(const CRC16 lhs, const CRC16 rhs) noexcept;
-    friend bool operator==(const quint16 lhs, const CRC16 rhs) noexcept;
-    friend bool operator==(const CRC16 lhs, const quint16 rhs) noexcept;
-    friend bool operator!=(const CRC16 lhs, const CRC16 rhs) noexcept;
-    friend bool operator!=(const quint16 lhs, const CRC16 rhs) noexcept;
-    friend bool operator!=(const CRC16 lhs, const quint16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator==(const CRC16 lhs, const CRC16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator==(const quint16 lhs, const CRC16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator==(const CRC16 lhs, const quint16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator!=(const CRC16 lhs, const CRC16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator!=(const quint16 lhs, const CRC16 rhs) noexcept;
+    friend bool GENLIB_EXPORT operator!=(const CRC16 lhs, const quint16 rhs) noexcept;
 };
 
-bool operator==(const CRC16 lhs, const CRC16 rhs) noexcept;
-bool operator==(const quint16 lhs, const CRC16 rhs) noexcept;
-bool operator==(const CRC16 lhs, const quint16 rhs) noexcept;
-bool operator!=(const CRC16 lhs, const CRC16 rhs) noexcept;
-bool operator!=(const quint16 lhs, const CRC16 rhs) noexcept;
-bool operator!=(const CRC16 lhs, const quint16 rhs) noexcept;
+bool GENLIB_EXPORT operator==(const CRC16 lhs, const CRC16 rhs) noexcept;
+bool GENLIB_EXPORT operator==(const quint16 lhs, const CRC16 rhs) noexcept;
+bool GENLIB_EXPORT operator==(const CRC16 lhs, const quint16 rhs) noexcept;
+bool GENLIB_EXPORT operator!=(const CRC16 lhs, const CRC16 rhs) noexcept;
+bool GENLIB_EXPORT operator!=(const quint16 lhs, const CRC16 rhs) noexcept;
+bool GENLIB_EXPORT operator!=(const CRC16 lhs, const quint16 rhs) noexcept;
 
 }
