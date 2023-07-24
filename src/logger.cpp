@@ -88,6 +88,11 @@ void Logger::setLogLevel(const QString &level)
     _logLevel = _logLevelsMap.value(level);
 }
 
+Logger::LogLevels Logger::logLevel()
+{
+    return _logLevel;
+}
+
 /// Категории мы сейчас не используем, задел на будущее
 Q_LOGGING_CATEGORY(logDebug, "Debug")
 Q_LOGGING_CATEGORY(logInfo, "Info")
