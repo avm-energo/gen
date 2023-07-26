@@ -134,7 +134,18 @@ struct GasDensity
     float MolW;      // Молярная масса, г/моль
     float Weight;    // Масса, кг
     float MolFrac;   // Мольная доля, %
+
+    friend inline bool operator==(const GasDensity &lhs, const GasDensity &rhs);
 };
+
+inline bool operator==(const GasDensity &lhs, const GasDensity &rhs)
+{
+    return                              //
+        (lhs.TypeGaz == rhs.TypeGaz) && //
+        (lhs.MolW == rhs.MolW) &&       //
+        (lhs.Weight == rhs.Weight) &&   //
+        (lhs.MolFrac == rhs.MolFrac);   //
+}
 
 using BYTE = uint8_t;
 using WORD = uint16_t;
