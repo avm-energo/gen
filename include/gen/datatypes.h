@@ -128,6 +128,14 @@ struct SingleCommand
     bool value;
 };
 
+struct GasDensity
+{
+    quint32 TypeGaz; // Тип газа
+    float MolW;      // Молярная масса, г/моль
+    float Weight;    // Масса, кг
+    float MolFrac;   // Мольная доля, %
+};
+
 using BYTE = uint8_t;
 using WORD = uint16_t;
 using DWORD = uint32_t;
@@ -153,6 +161,8 @@ using FLOAT_3t = std::array<FLOAT, 3>;
 using FLOAT_4t = std::array<FLOAT, 4>;
 using FLOAT_6t = std::array<FLOAT, 6>;
 using FLOAT_8t = std::array<FLOAT, 8>;
+using CONF_DENS = GasDensity;
+using CONF_DENS_3t = std::array<CONF_DENS, 3>;
 
 static_assert(sizeof(BYTE) != sizeof(WORD), "Broken datatypes");
 static_assert(sizeof(BYTE) != sizeof(DWORD), "Broken datatypes");
@@ -162,14 +172,14 @@ static_assert(sizeof(WORD_4t) == sizeof(BYTE_8t), "Broken datatypes");
 static_assert(sizeof(DWORD_4t) == sizeof(BYTE_16t), "Broken datatypes");
 static_assert(sizeof(FLOAT_2t) == sizeof(BYTE_8t), "Broken datatypes");
 
-using valueType = std::variant<BYTE, WORD, DWORD, INT32, //
-    BYTE_4t, WORD_4t, DWORD_4t,                          //
-    BYTE_6t, WORD_6t, DWORD_6t,                          //
-    BYTE_8t, WORD_8t, DWORD_8t,                          //
-    BYTE_16t, WORD_16t, DWORD_16t,                       //
-    BYTE_32t, WORD_32t, DWORD_32t,                       //
-    FLOAT, FLOAT_2t, FLOAT_3t, FLOAT_4t, FLOAT_6t, FLOAT_8t>;
-
+using valueType = std::variant<BYTE, WORD, DWORD, INT32,     //
+    BYTE_4t, WORD_4t, DWORD_4t,                              //
+    BYTE_6t, WORD_6t, DWORD_6t,                              //
+    BYTE_8t, WORD_8t, DWORD_8t,                              //
+    BYTE_16t, WORD_16t, DWORD_16t,                           //
+    BYTE_32t, WORD_32t, DWORD_32t,                           //
+    FLOAT, FLOAT_2t, FLOAT_3t, FLOAT_4t, FLOAT_6t, FLOAT_8t, //
+    CONF_DENS_3t>;
 }
 
 template <typename T> struct isValueType
