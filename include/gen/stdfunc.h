@@ -33,9 +33,10 @@ template <typename T> using SharedPointer = std::shared_ptr<T>;
 
 template <typename T> using UniquePointer = std::unique_ptr<T, QtHelper::deleteLaterDeletor>;
 
-// Evil template magic...
-template <typename T>
-using enable_if_pod = typename std::enable_if<std::is_trivial<T>::value && std::is_standard_layout<T>::value, bool>;
+/// \brief Декларация для определния простых (POD) типов.
+/// \see https://en.cppreference.com/w/cpp/types/is_pod
+template <typename T> //
+constexpr static auto is_simple_v = std::is_standard_layout_v<T> &&std::is_trivial_v<T>;
 
 constexpr int defaultRatio = 3;
 constexpr int maxRatio = 5;
@@ -105,12 +106,20 @@ public:
      *  \param number[in] Input data for convertation.
      *  \return Byte array view of input data.
      */
-    template <typename T, size_t size = sizeof(T), typename = enable_if_pod<T>>
-    static QByteArray ArrayFromNumber(T number)
+    //    template <typename T, size_t size = sizeof(T), typename = std::enable_if<is_simple_v<T>, bool>> //
+    //    static QByteArray ArrayFromNumber(T number)
+    //    {
+    //        QByteArray ba(size, 0);
+    //        *(reinterpret_cast<T *>(ba.data())) = number;
+    //        return ba;
+    //    }
+
+    /// \brief Converts an instance of trivial data type to the byte array.
+    /// \param value[in] Input data for convertation.
+    template <typename T, std::size_t size = sizeof(T), std::enable_if_t<is_simple_v<T>, bool> = true> //
+    inline QByteArray toByteArray(const T &value)
     {
-        QByteArray ba(size, 0);
-        *(reinterpret_cast<T *>(ba.data())) = number;
-        return ba;
+        return QByteArray::fromRawData(reinterpret_cast<const char *>(&value), size);
     }
 
     /// \brief Converts list of known datatype to QVariant list.
@@ -132,7 +141,8 @@ public:
     }
 
     /// \brief Returns count of bit set in input data.
-    template <typename T, size_t size = sizeof(T), typename = enable_if_pod<T>> static int CountSetBits(T N)
+    template <typename T, size_t size = sizeof(T), typename = std::enable_if<is_simple_v<T>, bool>> //
+    static int CountSetBits(T N)
     {
         int count = 0;
         for (int i = 0; i < sizeof(T) * 8; i++)
