@@ -102,22 +102,10 @@ public:
         list.append(item);
     }
 
-    /*! \brief Converts trivial data type in byte array view.
-     *  \param number[in] Input data for convertation.
-     *  \return Byte array view of input data.
-     */
-    //    template <typename T, size_t size = sizeof(T), typename = std::enable_if<is_simple_v<T>, bool>> //
-    //    static QByteArray ArrayFromNumber(T number)
-    //    {
-    //        QByteArray ba(size, 0);
-    //        *(reinterpret_cast<T *>(ba.data())) = number;
-    //        return ba;
-    //    }
-
     /// \brief Converts an instance of trivial data type to the byte array.
     /// \param value[in] Input data for convertation.
     template <typename T, std::size_t size = sizeof(T), std::enable_if_t<is_simple_v<T>, bool> = true> //
-    inline QByteArray toByteArray(const T &value)
+    static QByteArray toByteArray(const T &value)
     {
         return QByteArray::fromRawData(reinterpret_cast<const char *>(&value), size);
     }
