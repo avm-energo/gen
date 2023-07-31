@@ -32,8 +32,8 @@ public:
     void update(const quint8 *data, const quint32 size);
     /// \brief Сбрасывает контрольную сумму до начального значения.
     void reset() noexcept;
-    /// \brief Добавляет контрольную сумму в конец переданного массива данных array.
-    void appendTo(QByteArray &array) const;
+    /// \brief Возвращает контрольную сумму в виде массива байт.
+    QByteArray toByteArray() const;
 
     /// \brief Оператор приведения к типу quint16.
     operator quint16() const noexcept;

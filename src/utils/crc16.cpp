@@ -79,10 +79,12 @@ void CRC16::reset() noexcept
     loByte = 0xFF;
 }
 
-void CRC16::appendTo(QByteArray &array) const
+QByteArray CRC16::toByteArray() const
 {
+    QByteArray array;
     array.append(hiByte);
     array.append(loByte);
+    return array;
 }
 
 CRC16::operator quint16() const noexcept
