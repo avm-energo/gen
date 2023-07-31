@@ -5,20 +5,22 @@
 #include <gen/gen_export.h>
 
 constexpr unsigned int UINT24_MAX = 16777215;
+class QByteArray;
 
 class GENLIB_EXPORT uint24
 {
 protected:
-    unsigned char value[3];
+    std::uint8_t value[3];
 
 public:
     uint24();
     uint24(const uint24 &val);
     uint24(const uint32_t &val);
     uint24 &operator=(const uint24 &input);
-    uint24 &operator=(const uint32_t input);
+    uint24 &operator=(const std::uint32_t input);
 
-    operator uint32_t() const;
+    operator std::uint32_t() const;
+    operator std::uint16_t() const;
     uint24 operator+(const uint24 &val) const;
     uint24 operator-(const uint24 &val) const;
     uint24 operator*(const uint24 &val) const;
@@ -36,7 +38,7 @@ public:
     bool operator<=(const uint24 &val) const;
 
     /* Define all operations you need below.. */
-    quint16 toU16() const;
+    QByteArray toByteArray();
 };
 
 class ui24
