@@ -5,12 +5,14 @@
 #include <gen/gen_export.h>
 
 constexpr unsigned int UINT24_MAX = 16777215;
+constexpr inline std::size_t elements = 3;
+
 class QByteArray;
 
 class GENLIB_EXPORT uint24
 {
 protected:
-    std::uint8_t value[3];
+    std::uint8_t value[elements];
 
 public:
     uint24();
@@ -38,7 +40,8 @@ public:
     bool operator<=(const uint24 &val) const;
 
     /* Define all operations you need below.. */
-    QByteArray toByteArray();
+    QByteArray toByteArray() const &;  // overload for lvalue
+    QByteArray toByteArray() const &&; // overload for rvalue
 };
 
 class ui24
