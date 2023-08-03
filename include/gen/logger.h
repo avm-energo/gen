@@ -26,6 +26,7 @@ public:
     void static writeStart(const QString &filename);
     void static setLogLevel(LogLevels level);
     void static setLogLevel(const QString &level);
+    LogLevels static logLevel();
 
 protected:
     Logger() = delete;
