@@ -9,7 +9,6 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTcpSocket>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
 #include <QTimer>
@@ -26,6 +25,14 @@ QString StdFunc::DeviceIP = "";
 QString StdFunc::s_OrganizationString = "";
 int StdFunc::m_tuneRequestCount = 0;
 
+// clang-format off
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore/QTextCodec>
+#else
+#include <QtCore5Compat/QTextCodec>
+#endif
+// clang-format on
+
 StdFunc::StdFunc()
 {
 }
@@ -39,7 +46,7 @@ void StdFunc::Init()
         + QCoreApplication::applicationName() + "/";
     if ((!SystemHomeDir.contains("/root")) && SystemHomeDir.startsWith("//"))
     {
-        if (SystemHomeDir.front() == "/")
+        if (SystemHomeDir.front() == '/')
             SystemHomeDir.replace(0, 1, "/root");
     }
 
@@ -67,12 +74,18 @@ QString StdFunc::VerToStr(quint32 num)
 quint32 StdFunc::StrToVer(const QString &str)
 {
     auto dotPos = str.indexOf('.');
-    int mv = str.leftRef(dotPos).toInt() << 24;
     auto dashPos = str.indexOf('-');
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    int mv = str.leftRef(dotPos).toInt() << 24;
     int lv = str.midRef(dotPos + 1, dashPos - dotPos - 1).toInt() << 16;
-    auto svStr = str.rightRef(str.size() - dashPos - 1);
-    int sv = svStr.toInt();
-    return mv | lv | sv;
+    int sv = str.rightRef(str.size() - dashPos - 1).toInt();
+#else
+    // Don't trust clazy: Qt6 QString hasn't leftRef, midRef and rightRef methods
+    int mv = str.left(dotPos).toInt() << 24;
+    int lv = str.mid(dotPos + 1, dashPos - dotPos - 1).toInt() << 16;
+    int sv = str.right(str.size() - dashPos - 1).toInt();
+#endif
+    return (mv | lv | sv);
 }
 
 /// \brief Converts a value from string view to float point datatype.

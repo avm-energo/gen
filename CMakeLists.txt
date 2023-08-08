@@ -22,8 +22,7 @@ include(DetermineTargetArchitecture)
 include(SetProjectTargetName)
 
 find_package(QT NAMES Qt6 Qt5)
-find_package(
-    Qt${QT_VERSION_MAJOR}
+find_package(Qt${QT_VERSION_MAJOR}
     COMPONENTS Core Network Xml REQUIRED
 )
 
@@ -57,6 +56,7 @@ else()
 endif()
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
 
+# Linking Qt core libraries for using in gen library
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
@@ -64,6 +64,17 @@ target_link_libraries(
     Qt${QT_VERSION_MAJOR}::Network
 )
 
+# Using Qt6: linking Qt5 Compatibility library
+if (${QT_VERSION_MAJOR} EQUAL 6)
+    find_package(Qt${QT_VERSION_MAJOR}
+        COMPONENTS Core5Compat REQUIRED
+    )
+    target_link_libraries(
+        ${PROJECT_NAME} PUBLIC
+        Qt${QT_VERSION_MAJOR}::Core5Compat)
+endif()
+
+# Linking liblzma
 if(PROJECT_TARGET_NAME MATCHES "win")
     # Getting liblzma from conan xz_utils packet
     find_package(LibLZMA)
