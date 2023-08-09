@@ -23,7 +23,7 @@ include(SetProjectTargetName)
 
 find_package(QT NAMES Qt6 Qt5)
 find_package(Qt${QT_VERSION_MAJOR}
-    COMPONENTS Core Network Xml REQUIRED
+    COMPONENTS Core Gui Network Xml REQUIRED
 )
 
 if(NOT DEFINED PROJECT_ARCHITECTURE)
@@ -60,6 +60,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Xml
     Qt${QT_VERSION_MAJOR}::Network
 )

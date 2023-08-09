@@ -18,9 +18,8 @@
 
 QString StdFunc::HomeDir = "";       // Рабочий каталог программы
 QString StdFunc::SystemHomeDir = ""; // Системный каталог программы
+decltype(StdFunc::state) StdFunc::state {};
 
-bool StdFunc::Cancelled = false;
-bool StdFunc::s_cancelEnabled = true;
 QString StdFunc::DeviceIP = "";
 QString StdFunc::s_OrganizationString = "";
 int StdFunc::m_tuneRequestCount = 0;
@@ -28,14 +27,12 @@ int StdFunc::m_tuneRequestCount = 0;
 // clang-format off
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtCore/QTextCodec>
+#include <QRegExpValidator>
 #else
 #include <QtCore5Compat/QTextCodec>
+#include <QRegularExpressionValidator>
 #endif
 // clang-format on
-
-StdFunc::StdFunc()
-{
-}
 
 /*! \brief Initialization function for static class fields.
  *  \details Initialize next fields by values: system home directory, organization, device IP, etc...
@@ -181,32 +178,32 @@ int StdFunc::TuneRequestCount()
 /// \brief Sets cancel state when enabled.
 void StdFunc::Cancel()
 {
-    if (s_cancelEnabled)
-        Cancelled = true;
+    if (state.cancelEnabled)
+        state.cancelled = true;
 }
 
 /// \brief Turns off cancel state.
 void StdFunc::ClearCancel()
 {
-    Cancelled = false;
+    state.cancelled = false;
 }
 
 /// \brief Returns cancel state.
 bool StdFunc::IsCancelled()
 {
-    return Cancelled;
+    return state.cancelled;
 }
 
 /// \brief Disallows to set cancel state.
 void StdFunc::SetCancelDisabled()
 {
-    s_cancelEnabled = false;
+    state.cancelEnabled = false;
 }
 
 /// \brief Allows to set cancel state.
 void StdFunc::SetCancelEnabled()
 {
-    s_cancelEnabled = true;
+    state.cancelEnabled = true;
 }
 
 /*! \brief Returns the position of first bit set.
@@ -342,4 +339,16 @@ void StdFunc::RemoveSubstr(std::string &str, std::string &substr)
     std::string::size_type n = substr.length();
     for (std::string::size_type i = str.find(substr); i != std::string::npos; i = str.find(substr))
         str.erase(i, n);
+}
+
+QValidator *StdFunc::getRegExpValidator(const QString &pattern, QObject *parent)
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    // Qt5 code
+    auto validator = new QRegExpValidator(QRegExp(pattern), parent);
+#else
+    // Qt6 code
+    auto validator = new QRegularExpressionValidator(QRegularExpression(pattern), parent);
+#endif
+    return validator;
 }

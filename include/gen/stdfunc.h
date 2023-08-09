@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QValidator>
 #include <cmath>
 #include <functional>
 #include <gen/gen_export.h>
@@ -45,38 +46,47 @@ constexpr auto resourceDirectory = ":/module";
 /*! \brief Class contains most frequently used general purpose functions
  *  \details That class contains static general purpose functions
  */
-class StdFunc
+class GENLIB_EXPORT StdFunc
 {
+private:
+    static QString HomeDir;        ///< \private Рабочий каталог программы
+    static QString SystemHomeDir;  ///< \private Системный каталог программы
+    static int m_tuneRequestCount; ///< \private Степень усреднения для регулировки
+
 public:
     static QString DeviceIP;             ///< Device's IP address
     static QString s_OrganizationString; ///< Name of organization
+    static struct
+    {
+        bool cancelled = false;
+        bool cancelEnabled = true;
+    } state;
 
-    StdFunc();
+    StdFunc() = default;
 
-    static void GENLIB_EXPORT Init();
-    static QString GENLIB_EXPORT VerToStr(quint32);
-    static quint32 GENLIB_EXPORT StrToVer(const QString &str);
-    static bool GENLIB_EXPORT FloatIsWithinLimits(double var, double base, double tolerance);
-    static float GENLIB_EXPORT ToFloat(const QString &text, bool *ok = nullptr);
-    static void GENLIB_EXPORT SetHomeDir(const QString &dir);
-    static QString GENLIB_EXPORT GetHomeDir();
-    static QString GENLIB_EXPORT GetSystemHomeDir();
-    static void GENLIB_EXPORT SetDeviceIP(const QString &ip);
-    static QString GENLIB_EXPORT ForDeviceIP();
-    static void GENLIB_EXPORT SetOrganizationString(const QString &str);
-    static QString GENLIB_EXPORT OrganizationString();
-    static void GENLIB_EXPORT SetTuneRequestCount(int n);
-    static int GENLIB_EXPORT TuneRequestCount();
-    static void GENLIB_EXPORT Cancel();
-    static void GENLIB_EXPORT ClearCancel();
-    static bool GENLIB_EXPORT IsCancelled();
-    static void GENLIB_EXPORT SetCancelDisabled();
-    static void GENLIB_EXPORT SetCancelEnabled();
-    static int GENLIB_EXPORT IndexByBit(quint32 dword);
-    static quint32 GENLIB_EXPORT BitByIndex(int idx);
-    // static QString PrbMessage();
-    // static void SetPrbMessage(const QString &msg);
-    static void GENLIB_EXPORT Wait(int ms = MAINSLEEP);
+    static void Init();
+    static QString VerToStr(quint32);
+    static quint32 StrToVer(const QString &str);
+    static bool FloatIsWithinLimits(double var, double base, double tolerance);
+    static float ToFloat(const QString &text, bool *ok = nullptr);
+    static void SetHomeDir(const QString &dir);
+    static QString GetHomeDir();
+    static QString GetSystemHomeDir();
+    static void SetDeviceIP(const QString &ip);
+    static QString ForDeviceIP();
+    static void SetOrganizationString(const QString &str);
+    static QString OrganizationString();
+    static void SetTuneRequestCount(int n);
+    static int TuneRequestCount();
+    static void Cancel();
+    static void ClearCancel();
+    static bool IsCancelled();
+    static void SetCancelDisabled();
+    static void SetCancelEnabled();
+    static int IndexByBit(quint32 dword);
+    static quint32 BitByIndex(int idx);
+    static void Wait(int ms = MAINSLEEP);
+
     static inline int goldenRatio(int value)
     {
         int multiplier = value / 10;
@@ -88,10 +98,11 @@ public:
         return defaultRatio + multiplier;
     }
 
-    static quint32 GENLIB_EXPORT Ping(quint32 addr);
-    static quint32 GENLIB_EXPORT CheckPort(quint32 ip4Addr, quint16 port);
+    static quint32 Ping(quint32 addr);
+    static quint32 CheckPort(quint32 ip4Addr, quint16 port);
 
     static void RemoveSubstr(std::string &str, std::string &substr);
+    static QValidator *getRegExpValidator(const QString &pattern, QObject *parent = nullptr);
 
     /*! \brief Template function for joining items into QList
      *  \param list[out] QList for joining input item
@@ -140,10 +151,4 @@ public:
         }
         return count;
     }
-
-private:
-    static QString HomeDir;        ///< \private Рабочий каталог программы
-    static QString SystemHomeDir;  ///< \private Системный каталог программы
-    static int m_tuneRequestCount; ///< \private Степень усреднения для регулировки
-    static bool Cancelled, s_cancelEnabled;
 };
