@@ -56,6 +56,9 @@ else()
 endif()
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
 
+# Set project version as gen target property
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+
 # Linking Qt core libraries for using in gen library
 target_link_libraries(
     ${PROJECT_NAME} PUBLIC
