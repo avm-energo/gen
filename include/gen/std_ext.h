@@ -53,31 +53,19 @@ struct is_container<T,
 {
 };
 
-namespace detail
+template <typename T, typename Variant, std::size_t I = std::variant_size<Variant>::value>
+static constexpr bool is_variant_alternative()
 {
-    template <class F, size_t... I> constexpr void for_constexpr_impl(F &&func, std::index_sequence<I...>)
+    if constexpr (I > 0)
     {
-        (func(std::integral_constant<std::size_t, I> {}), ...);
+        constexpr auto index = I - 1;
+        if constexpr (std::is_same_v<T, std::variant_alternative_t<index, Variant>>)
+            return true;
+        else
+            return is_variant_alternative<T, Variant, I - 1>();
     }
-}
-
-template <size_t C, class F> constexpr void for_constexpr(F &&func)
-{
-    // check in runtime without std::forward
-    std_ext::detail::for_constexpr_impl(std::forward<F>(func), std::make_index_sequence<C> {});
-}
-
-template <typename T, typename F> static constexpr bool is_variant_alternative()
-{
-    constexpr auto size = std::variant_size_v<F>;
-    bool state = false;
-    for_constexpr<size>([&](auto index) {
-        if constexpr (std::is_same_v<T, std::variant_alternative_t<index, F>>)
-        {
-            state = true;
-        }
-    });
-    return state;
+    else
+        return false;
 }
 
 template <class Variant> std::type_info const &variant_type(Variant const &v)
@@ -85,10 +73,14 @@ template <class Variant> std::type_info const &variant_type(Variant const &v)
     return std::visit([](auto &&x) -> decltype(auto) { return typeid(x); }, v);
 }
 
-template <class T> struct remove_cvref
+template <class T> //
+struct remove_cvref
 {
-    typedef std::remove_cv_t<std::remove_reference_t<T>> type;
+    using type = std::remove_cv_t<std::remove_reference_t<T>>;
 };
+
+template <class T> //
+using remove_cvref_t = typename remove_cvref<T>::type;
 
 #if defined(Q_CC_MSVC)
 __forceinline
