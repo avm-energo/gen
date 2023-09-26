@@ -13,23 +13,21 @@ constexpr char logStart[] = "=== Log started ===\n";
 constexpr char logExt[] = "log";
 }
 
-class GENLIB_EXPORT LogClass : public QObject
+class GENLIB_EXPORT LogClass
 {
-    Q_OBJECT
+private:
+    bool m_canLog;
+    QFile m_file;
+    QMutex m_mutex;
 
 public:
-    explicit LogClass(QObject *parent = nullptr);
-    ~LogClass();
+    explicit LogClass() noexcept;
+    ~LogClass() noexcept;
     void init(const QString &filename);
     void error(const QString &str);
     void warning(const QString &str);
     void info(const QString &str);
     void intvarvalue(const QString &var, int value);
-    void writeFile(const QString &msg, const QString &prepend);
+    void writeFile(const QString &msg, const QString &prepend = "");
     void writeRaw(const QByteArray &ba);
-
-private:
-    bool m_canLog;
-    QFile m_file;
-    QMutex m_mutex;
 };

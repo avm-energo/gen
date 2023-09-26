@@ -7,11 +7,11 @@
 #include <gen/logclass.h>
 #include <gen/stdfunc.h>
 
-LogClass::LogClass(QObject *parent) : QObject(parent), m_canLog(false)
+LogClass::LogClass() noexcept : m_canLog(false)
 {
 }
 
-LogClass::~LogClass()
+LogClass::~LogClass() noexcept
 {
     m_file.flush();
     m_file.close();
@@ -33,25 +33,25 @@ void LogClass::init(const QString &filename)
 void LogClass::error(const QString &str)
 {
     if (m_canLog)
-        writeFile("Error", str);
+        writeFile(str, "Error");
 }
 
 void LogClass::info(const QString &str)
 {
     if (m_canLog)
-        writeFile("Info", str);
+        writeFile(str, "Info");
 }
 
 void LogClass::warning(const QString &str)
 {
     if (m_canLog)
-        writeFile("Warning", str);
+        writeFile(str, "Warning");
 }
 
 void LogClass::intvarvalue(const QString &var, int value)
 {
     if (m_canLog)
-        writeFile(var, QString::number(value));
+        writeFile(QString::number(value), var);
 }
 
 void LogClass::writeFile(const QString &msg, const QString &prepend)
