@@ -7,95 +7,80 @@
 #include <gen/logclass.h>
 #include <gen/stdfunc.h>
 
-LogClass::LogClass(QObject *parent) : QObject(parent)
+LogClass::LogClass(QObject *parent) : QObject(parent), m_canLog(false)
 {
-    fp = nullptr;
-    mtx = new QMutex;
-    CanLog = false;
 }
 
 LogClass::~LogClass()
 {
-    if (fp != nullptr)
-    {
-        fp->flush();
-        fp->close();
-        delete fp;
-    }
-    delete mtx;
+    m_file.flush();
+    m_file.close();
 }
 
-void LogClass::Init(const QString &Filename)
+void LogClass::init(const QString &filename)
 {
-    StdFunc::GetSystemHomeDir() + Filename;
     // тестовая проверка открытия файла на запись
-    fp = new QFile(StdFunc::GetSystemHomeDir() + Filename);
-    if (!fp->open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append))
+    m_file.setFileName(StdFunc::GetSystemHomeDir() + filename);
+    if (!m_file.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Append))
     {
-        CanLog = false;
+        m_canLog = false;
         qCritical("Ошибка открытия файла");
-        return;
     }
-    CanLog = true;
+    else
+        m_canLog = true;
 }
 
 void LogClass::error(const QString &str)
 {
-    if (CanLog)
-        WriteFile("Error", str);
+    if (m_canLog)
+        writeFile("Error", str);
 }
 
 void LogClass::info(const QString &str)
 {
-    if (CanLog)
-        WriteFile("Info", str);
+    if (m_canLog)
+        writeFile("Info", str);
 }
 
 void LogClass::warning(const QString &str)
 {
-    if (CanLog)
-        WriteFile("Warning", str);
+    if (m_canLog)
+        writeFile("Warning", str);
 }
 
 void LogClass::intvarvalue(const QString &var, int value)
 {
-    if (CanLog)
-        WriteFile(var, QString::number(value));
+    if (m_canLog)
+        writeFile(var, QString::number(value));
 }
 
-void LogClass::WriteFile(const QString &Prepend, const QString &msg)
+void LogClass::writeFile(const QString &msg, const QString &prepend)
 {
-    if (fp != nullptr)
-    {
-        QMutexLocker locker(mtx);
-        QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "]";
-        fp->write(tmps.toLocal8Bit());
-        tmps = "[" + Prepend + "] ";
-        fp->write(tmps.toLocal8Bit());
-        fp->write(msg.toLocal8Bit());
-        fp->write("\n");
-        fp->flush();
-        Files::checkNGzip(fp);
-    }
+    QMutexLocker locker(&m_mutex);
+    QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "] ";
+    m_file.write(tmps.toLocal8Bit());
+    if (!prepend.isEmpty())
+        tmps = "[" + prepend + "] ";
+    m_file.write(tmps.toLocal8Bit());
+    m_file.write(msg.toLocal8Bit());
+    m_file.write("\n");
+    m_file.flush();
+    Files::checkNGzip(&m_file);
 }
 
 // thread-safe function
-
-void LogClass::WriteRaw(const QByteArray &ba)
+void LogClass::writeRaw(const QByteArray &ba)
 {
-    if (fp != nullptr)
-    {
-        QMutexLocker locker(mtx);
-        QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "]";
-        int writtenSize;
-        writtenSize = fp->write(tmps.toLocal8Bit());
-        if (writtenSize == -1)
-            return;
-        writtenSize = fp->write(ba);
-        if (writtenSize == -1)
-            return;
-        if (!fp->flush())
-            return;
-        Files::checkNGzip(fp);
-    }
+    QMutexLocker locker(&m_mutex);
+    QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "] ";
+    int writtenSize;
+    writtenSize = m_file.write(tmps.toLocal8Bit());
+    if (writtenSize == -1)
+        return;
+    writtenSize = m_file.write(ba);
+    if (writtenSize == -1)
+        return;
+    if (!m_file.flush())
+        return;
+    Files::checkNGzip(&m_file);
 }
