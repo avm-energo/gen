@@ -57,15 +57,16 @@ void LogClass::intvarvalue(const QString &var, int value)
 void LogClass::writeFile(const QString &msg, const QString &prepend)
 {
     QMutexLocker locker(&m_mutex);
-    QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "] ";
-    m_file.write(tmps.toLocal8Bit());
-    if (!prepend.isEmpty())
-        tmps = "[" + prepend + "] ";
-    m_file.write(tmps.toLocal8Bit());
-    m_file.write(msg.toLocal8Bit());
-    m_file.write("\n");
-    m_file.flush();
-    Files::checkNGzip(&m_file);
+    if (m_file.isOpen())
+    {
+        QString log = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "] ";
+        if (!prepend.isEmpty())
+            log = log + "[" + prepend + "] ";
+        log = log + msg + "\n";
+        m_file.write(log.toLocal8Bit());
+        m_file.flush();
+        Files::checkNGzip(&m_file);
+    }
 }
 
 // thread-safe function

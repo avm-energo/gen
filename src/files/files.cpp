@@ -102,9 +102,9 @@ QString Files::GetFirstDriveWithLabel(QStringList &filepaths, const QString &lab
 
 void Files::checkNGzip(QFile *logFile)
 {
-    auto filename = logFile->fileName();
     if (logFile->size() >= LOG_MAX_SIZE)
     {
+        auto filename = logFile->fileName();
         if (rotateGzipLogs(filename))
         {
             QFile fileOut(filename + ".0.gz");

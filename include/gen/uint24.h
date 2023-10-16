@@ -38,10 +38,6 @@ public:
     bool operator!=(const uint24 &val) const;
     bool operator>=(const uint24 &val) const;
     bool operator<=(const uint24 &val) const;
-
-    /* Define all operations you need below.. */
-    QByteArray toByteArray() const &;  // overload for lvalue
-    QByteArray toByteArray() const &&; // overload for rvalue
 };
 
 class ui24

@@ -119,18 +119,3 @@ bool uint24::operator<=(const uint24 &val) const
 {
     return static_cast<std::uint32_t>(*this) <= static_cast<std::uint32_t>(val);
 }
-
-QByteArray uint24::toByteArray() const &
-{
-    return QByteArray::fromRawData(reinterpret_cast<const char *>(&value[0]), sizeof(*this));
-}
-
-QByteArray uint24::toByteArray() const &&
-{
-    QByteArray retVal(sizeof(*this), 0);
-    auto srcBegin = &value[0];
-    auto srcEnd = srcBegin + elements;
-    auto destBegin = retVal.data();
-    std::copy(srcBegin, srcEnd, destBegin);
-    return retVal;
-}
