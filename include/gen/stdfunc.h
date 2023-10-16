@@ -6,6 +6,7 @@
 #include <cmath>
 #include <functional>
 #include <gen/gen_export.h>
+#include <gen/uint24.h>
 #include <memory>
 #include <type_traits>
 
@@ -115,7 +116,8 @@ public:
 
     /// \brief Converts an instance of trivial data type to the byte array.
     /// \param value[in] Input data for convertation.
-    template <typename T, std::size_t size = sizeof(T), std::enable_if_t<is_simple_v<T>, bool> = true> //
+    template <typename T, std::size_t size = sizeof(T),
+        std::enable_if_t<is_simple_v<T> || std::is_same_v<T, uint24>, bool> = true> //
     static QByteArray toByteArray(const T &value)
     {
         return QByteArray::fromRawData(reinterpret_cast<const char *>(&value), size);
