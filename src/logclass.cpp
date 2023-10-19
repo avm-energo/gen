@@ -30,6 +30,11 @@ void LogClass::init(const QString &filename)
         m_canLog = true;
 }
 
+QString LogClass::getFilename() const noexcept
+{
+    return m_file.fileName();
+}
+
 void LogClass::error(const QString &str)
 {
     if (m_canLog)

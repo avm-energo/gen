@@ -23,11 +23,15 @@ private:
 public:
     explicit LogClass() noexcept;
     ~LogClass() noexcept;
+
     void init(const QString &filename);
+    QString getFilename() const noexcept;
+
     void error(const QString &str);
     void warning(const QString &str);
     void info(const QString &str);
     void intvarvalue(const QString &var, int value);
+
     void writeFile(const QString &msg, const QString &prepend = "");
     void writeRaw(const QByteArray &ba);
 };
