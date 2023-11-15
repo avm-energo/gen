@@ -73,6 +73,7 @@ template <class Variant> std::type_info const &variant_type(Variant const &v)
     return std::visit([](auto &&x) -> decltype(auto) { return typeid(x); }, v);
 }
 
+#ifndef __cpp_lib_remove_cvref
 template <class T> //
 struct remove_cvref
 {
@@ -81,6 +82,9 @@ struct remove_cvref
 
 template <class T> //
 using remove_cvref_t = typename remove_cvref<T>::type;
+#else // ^^^ __cpp_lib_remove_cvref / !__cpp_lib_remove_cvref vvv
+
+#endif // __cpp_lib_remove_cvref
 
 #if defined(Q_CC_MSVC)
 __forceinline

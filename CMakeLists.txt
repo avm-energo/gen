@@ -10,7 +10,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 option(GEN_STATIC "Build gen as static library" OFF)
 option(GEN_BUILD_TESTS "Build gen library tests" ON)

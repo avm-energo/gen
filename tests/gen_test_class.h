@@ -33,6 +33,11 @@ private slots:
     void binaryFileCtorSizeTest();
     void binaryFileIterTest();
     void binaryFileConstIterTest();
+    void binaryFileReverseIterTest();
     void binaryFileFirstLastTest();
     void binaryFileCopyAsTest();
+    void binaryFileFindRangeTest();
+    void binaryFileFindReverseRangeTest();
+    void binaryFileFindAllRangesTest();
+    void binaryFileRemoveTest();
 };
