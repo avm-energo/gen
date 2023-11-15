@@ -1,7 +1,8 @@
+#include "gen/timefunc.h"
+
 #include <QDateTime>
 #include <QSettings>
 #include <gen/settings.h>
-#include <gen/timefunc.h>
 #include <memory>
 
 TimeFunc::TimeFunc()

@@ -1,5 +1,6 @@
+#include "gen/files/lzma_stream.h"
+
 #include <QDebug>
-#include <gen/files/lzma_stream.h>
 
 LzmaBaseStream::LzmaBaseStream() : stream(LZMA_STREAM_INIT)
 {

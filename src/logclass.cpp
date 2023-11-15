@@ -1,10 +1,11 @@
+#include "gen/logclass.h"
+
 #include <QDataStream>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
 #include <gen/files.h>
-#include <gen/logclass.h>
 #include <gen/stdfunc.h>
 
 LogClass::LogClass() noexcept : m_canLog(false)
