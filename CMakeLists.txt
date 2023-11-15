@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(gen
-    DESCRIPTION "gen"
-    VERSION 1.0.0)
+  DESCRIPTION "gen"
+  VERSION 1.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,7 +12,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-option(GEN_STATIC:BOOL "Build gen as static library" OFF)
+option(GEN_STATIC "Build gen as static library" OFF)
+option(GEN_BUILD_TESTS "Build gen library tests" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -23,16 +24,16 @@ include(SetProjectTargetName)
 
 find_package(QT NAMES Qt6 Qt5)
 find_package(Qt${QT_VERSION_MAJOR}
-    COMPONENTS Core Gui Network Xml REQUIRED
+  COMPONENTS Core Gui Network Xml REQUIRED
 )
 
 if(NOT DEFINED PROJECT_ARCHITECTURE)
-    target_architecture(PROJECT_ARCHITECTURE)
-    set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
+  target_architecture(PROJECT_ARCHITECTURE)
+  set_project_target_name(${PROJECT_ARCHITECTURE} PROJECT_TARGET_NAME USER_DIRECTORY)
 endif()
 
 if(PROJECT_TARGET_NAME MATCHES "win")
-    include(ConanInstallDependencies)
+  include(ConanInstallDependencies)
 endif()
 
 #------------------------------------------------------------------------------#
@@ -42,18 +43,20 @@ endif()
 file(GLOB_RECURSE cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE public_headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
+# Library building settings
 if (GEN_STATIC)
-    message(STATUS "GEN STATIC LIBRARY")
-    add_library(${PROJECT_NAME} STATIC ${public_headers} ${cpp_sources})
-    target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAVE_STATIC_BUILD)
+  message(STATUS "GEN STATIC LIBRARY")
+  add_library(${PROJECT_NAME} STATIC ${public_headers} ${cpp_sources})
+  target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAVE_STATIC_BUILD)
 else()
-    message(STATUS "GEN SHARED LIBRARY")
-    add_library(${PROJECT_NAME} SHARED ${public_headers} ${cpp_sources})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE -DGEN_EXPORTS)
-    target_compile_definitions(${PROJECT_NAME} INTERFACE -DGEN_IMPORTS)
+  message(STATUS "GEN SHARED LIBRARY")
+  add_library(${PROJECT_NAME} SHARED ${public_headers} ${cpp_sources})
+  target_compile_definitions(${PROJECT_NAME} PRIVATE -DGEN_EXPORTS)
+  target_compile_definitions(${PROJECT_NAME} INTERFACE -DGEN_IMPORTS)
 endif()
+target_include_directories(${PROJECT_NAME} PUBLIC
+  "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
 
 # Set project version as gen target property
@@ -61,45 +64,47 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 
 # Linking Qt core libraries for using in gen library
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Gui
-    Qt${QT_VERSION_MAJOR}::Xml
-    Qt${QT_VERSION_MAJOR}::Network
+  ${PROJECT_NAME} PUBLIC
+  Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Gui
+  Qt${QT_VERSION_MAJOR}::Xml
+  Qt${QT_VERSION_MAJOR}::Network
 )
 
 # Using Qt6: linking Qt5 Compatibility library
 if (${QT_VERSION_MAJOR} EQUAL 6)
-    find_package(Qt${QT_VERSION_MAJOR}
-        COMPONENTS Core5Compat REQUIRED
-    )
-    target_link_libraries(
-        ${PROJECT_NAME} PUBLIC
-        Qt${QT_VERSION_MAJOR}::Core5Compat)
+  find_package(Qt${QT_VERSION_MAJOR}
+    COMPONENTS Core5Compat REQUIRED)
+  target_link_libraries(
+    ${PROJECT_NAME} PUBLIC
+    Qt${QT_VERSION_MAJOR}::Core5Compat)
 endif()
 
 # Linking liblzma
 if(PROJECT_TARGET_NAME MATCHES "win")
-    # Getting liblzma from conan xz_utils packet
-    find_package(LibLZMA)
-    if(LibLZMA_FOUND)
-        include_directories(${LibLZMA_INCLUDE_DIRS})
-        target_link_libraries(${PROJECT_NAME} PRIVATE LibLZMA::LibLZMA)
-    else()
-        message(FATAL_ERROR "liblzma not found, please install it manually!")
-    endif()
+  # Getting liblzma from conan xz_utils packet
+  find_package(LibLZMA)
+  if(LibLZMA_FOUND)
+    include_directories(${LibLZMA_INCLUDE_DIRS})
+    target_link_libraries(${PROJECT_NAME} PRIVATE LibLZMA::LibLZMA)
+  else()
+    message(FATAL_ERROR "liblzma not found, please install it manually!")
+  endif()
 else()
-    # Getting liblzma from APT: apt-get install liblzma-dev
-    target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
+  # Getting liblzma from APT: apt-get install liblzma-dev
+  target_link_libraries(${PROJECT_NAME} PUBLIC lzma)
 endif()
 
-target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
+# Building tests
+if (GEN_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
 
 # --- Install libs and binaries ---
 install(TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
 
 # --- Install include headers ---
