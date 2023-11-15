@@ -30,5 +30,9 @@ private slots:
     {
     }
 
-    void binaryFileTest();
+    void binaryFileCtorSizeTest();
+    void binaryFileIterTest();
+    void binaryFileConstIterTest();
+    void binaryFileFirstLastTest();
+    void binaryFileCopyAsTest();
 };
