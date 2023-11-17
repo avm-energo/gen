@@ -40,4 +40,6 @@ private slots:
     void binaryFileFindReverseRangeTest();
     void binaryFileFindAllRangesTest();
     void binaryFileRemoveTest();
+    void binaryFileRemoveReverseTest();
+    void binaryFileMoveTest();
 };

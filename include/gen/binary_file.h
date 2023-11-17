@@ -30,31 +30,54 @@ public:
 
 private:
     QByteArray m_file;
+    static constexpr inline auto s_recordSize = sizeof(value_type);
 
     inline void checking(const char *where) const noexcept
     {
-        Q_ASSERT_X(m_file.size() % sizeof(value_type) == 0, where, "Incorrect file size");
+        Q_ASSERT_X(m_file.size() % s_recordSize == 0, where, "Incorrect file size");
     }
 
     inline void removeImpl(iterator first, iterator last) noexcept
     {
-        difference_type index = first - begin(), len = (last - first) * sizeof(value_type);
-        m_file.remove(index, len);
-        checking("RemoveImpl calling");
-    }
-
-    inline void removeImpl(const_iterator first, const_iterator last) noexcept
-    {
-        difference_type index = first - begin(), len = (last - first) * sizeof(value_type);
-        m_file.remove(index, len);
+        difference_type index = (first - begin()) * s_recordSize;
+        difference_type length = (last - first) * s_recordSize;
+        m_file.remove(index, length);
         checking("RemoveImpl calling");
     }
 
     inline void removeImpl(reverse_iterator first, reverse_iterator last) noexcept
     {
-        difference_type index = first - rbegin(), len = (last - first) * sizeof(value_type);
-        m_file.remove(index, len);
+        difference_type index = (rend() - last) * s_recordSize;
+        difference_type length = (last - first) * s_recordSize;
+        m_file.remove(index, length);
         checking("RemoveImpl calling");
+    }
+
+    [[nodiscard]] inline bool moveImpl(iterator srcBegin, iterator srcEnd, iterator dst) noexcept
+    {
+        difference_type length = (srcEnd - srcBegin) * s_recordSize;
+        difference_type index = (dst - begin()) * s_recordSize;
+        index = ((dst - srcBegin) > 0) ? (index - length) : index;
+        if ((srcBegin == begin() && srcEnd == end()) ||                //
+            (dst >= srcBegin && dst <= srcEnd) || (dst == srcBegin) || //
+            (dst == srcEnd) || (length <= 0) || (index < 0) ||         //
+            (dst < begin()) || (dst > end()))
+            return false;
+
+        QByteArray tempRange(length, 0);
+        std::copy(srcBegin, srcEnd, reinterpret_cast<iterator>(tempRange.data()));
+        removeImpl(srcBegin, srcEnd);
+        m_file.insert(index, tempRange);
+        checking("moveImpl calling");
+        return true;
+    }
+
+    [[nodiscard]] inline bool moveImpl( //
+        reverse_iterator srcBegin,      //
+        reverse_iterator srcEnd,        //
+        reverse_iterator dst) noexcept  //
+    {
+        return false;
     }
 
 public:
@@ -62,17 +85,17 @@ public:
 
     explicit inline BinaryFile(const QByteArray &file) noexcept : m_file(file)
     {
-        checking("BinaryFile c-tor");
+        checking("BinaryFile c-tor calling");
     }
 
     explicit inline BinaryFile(QByteArray &&file) noexcept : m_file(std::move(file))
     {
-        checking("BinaryFile c-tor");
+        checking("BinaryFile c-tor calling");
     }
 
     inline size_type size() const noexcept
     {
-        return m_file.size() / sizeof(value_type);
+        return m_file.size() / s_recordSize;
     }
 
     inline iterator begin() noexcept
@@ -208,9 +231,16 @@ public:
         remove(range.begin, range.end);
     }
 
-    inline void move(iterator srcBegin, iterator srcEnd, iterator dst) noexcept
+    template <typename Iterator> //
+    [[nodiscard]] inline bool move(Iterator srcBegin, Iterator srcEnd, Iterator dst) noexcept
     {
-        ;
+        return moveImpl(srcBegin, srcEnd, dst);
+    }
+
+    template <typename Iterator> //
+    [[nodiscard]] inline bool move(const Range<Iterator> &range, Iterator dst) noexcept
+    {
+        return move(range.begin, range.end, dst);
     }
 };
 

@@ -36,24 +36,48 @@ constexpr auto arrayDataSize = constDataSize * sizeof(TestRecord1);
 constexpr auto maxValue = std::numeric_limits<quint32>::max();
 
 static const TestRecord1 constData1[constDataSize] {
-    { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 },          //
-    { 13, 14, 15, 16 }, { 17, 18, 19, 20 }, { 21, 22, 23, 24 }, //
-    { 25, 26, 27, 28 }, { 29, 30, 31, 32 }, { 33, 34, 35, 36 }, //
-    { 37, 38, 39, 40 }, { 41, 42, 43, 44 }, { 45, 46, 47, 48 }  //
+    { 1, 2, 3, 4 },     // 0
+    { 5, 6, 7, 8 },     // 1
+    { 9, 10, 11, 12 },  // 2
+    { 13, 14, 15, 16 }, // 3
+    { 17, 18, 19, 20 }, // 4
+    { 21, 22, 23, 24 }, // 5
+    { 25, 26, 27, 28 }, // 6
+    { 29, 30, 31, 32 }, // 7
+    { 33, 34, 35, 36 }, // 8
+    { 37, 38, 39, 40 }, // 9
+    { 41, 42, 43, 44 }, // 10
+    { 45, 46, 47, 48 }  // 11
 };
 
 static const TestRecord1 constData2[constDataSize] {
-    { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 11, 12 },                   //
-    { 13, 14, 15, 16 }, { 17, 18, 19, 20 }, { 21, 22, 23, 24 },          //
-    { maxValue, 0, 1, 2 }, { 3, maxValue, 4, 5 }, { 6, 7, maxValue, 8 }, //
-    { 37, 38, 39, 40 }, { 41, 42, 43, 44 }, { 45, 46, 47, 48 }           //
+    { 1, 2, 3, 4 },        // 0
+    { 5, 6, 7, 8 },        // 1
+    { 9, 10, 11, 12 },     // 2
+    { 13, 14, 15, 16 },    // 3
+    { 17, 18, 19, 20 },    // 4
+    { 21, 22, 23, 24 },    // 5
+    { maxValue, 0, 1, 2 }, // 6
+    { 3, maxValue, 4, 5 }, // 7
+    { 6, 7, maxValue, 8 }, // 8
+    { 37, 38, 39, 40 },    // 9
+    { 41, 42, 43, 44 },    // 10
+    { 45, 46, 47, 48 }     // 11
 };
 
 static const TestRecord1 constData3[constDataSize] {
-    { 1, 2, maxValue, 4 }, { 5, maxValue, 7, 8 }, { 9, 10, 11, 12 },        //
-    { 13, 14, 15, 16 }, { 17, maxValue, 19, 20 }, { maxValue, 22, 23, 24 }, //
-    { maxValue, 0, 1, 2 }, { maxValue, 3, 4, 5 }, { 6, 7, 7, 8 },           //
-    { 37, 38, 39, 40 }, { maxValue, 42, 43, 44 }, { maxValue, 46, 47, 48 }  //
+    { 1, 2, maxValue, 4 },    // 0
+    { 5, maxValue, 7, 8 },    // 1
+    { 9, 10, 11, 12 },        // 2
+    { 13, 14, 15, 16 },       // 3
+    { 17, maxValue, 19, 20 }, // 4
+    { maxValue, 22, 23, 24 }, // 5
+    { maxValue, 0, 1, 2 },    // 6
+    { maxValue, 3, 4, 5 },    // 7
+    { 6, 7, 7, 8 },           // 8
+    { 37, 38, 39, 40 },       // 9
+    { maxValue, 42, 43, 44 }, // 10
+    { maxValue, 46, 47, 48 }  // 11
 };
 
 bool testPredicate(const TestRecord1 &value)
@@ -216,6 +240,12 @@ void GenTestClass::binaryFileFindRangeTest()
     {
         QCOMPARE(*third, *fourth);
     }
+
+    bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> fileWithoutPattern(bytes);
+    auto fifthRange { fileWithoutPattern.findRange(testPredicate) };
+    QVERIFY(fifthRange.begin == fileWithoutPattern.begin());
+    QVERIFY(fifthRange.end == fileWithoutPattern.end());
 }
 
 void GenTestClass::binaryFileFindReverseRangeTest()
@@ -224,13 +254,20 @@ void GenTestClass::binaryFileFindReverseRangeTest()
     using namespace Files;
     auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData2[0]), arrayDataSize);
     BinaryFile<TestRecord1> file(bytes);
-    auto range { decltype(file)::findRange(file.rbegin(), file.rend(), testPredicate) };
+    auto firstRange { decltype(file)::findRange(file.rbegin(), file.rend(), testPredicate) };
     int index = 8;
-    for (auto iter = range.begin; iter != range.end; ++iter, --index)
+    for (auto iter = firstRange.begin; iter != firstRange.end; ++iter, --index)
     {
         QVERIFY(testPredicate(*iter));
         QCOMPARE(*iter, constData2[index]);
     }
+
+    bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> fileWithoutPattern(bytes);
+    auto secondRange { decltype(fileWithoutPattern)::findRange( //
+        fileWithoutPattern.rbegin(), fileWithoutPattern.rend(), testPredicate) };
+    QVERIFY(secondRange.begin == fileWithoutPattern.rbegin());
+    QVERIFY(secondRange.end == fileWithoutPattern.rend());
 }
 
 void GenTestClass::binaryFileFindAllRangesTest()
@@ -277,7 +314,131 @@ void GenTestClass::binaryFileRemoveTest()
     auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
     BinaryFile<TestRecord1> file(bytes);
     QCOMPARE(file.size(), constDataSize);
+
+    // Removing elements from the start
     file.remove(file.begin(), file.begin() + 4);
-    QCOMPARE(file.size(), constDataSize - 4);
+    auto size = file.size();
+    QCOMPARE(size, constDataSize - 4);
     QCOMPARE(*file.begin(), constData1[4]);
+    QCOMPARE(*(file.rend() - 1), constData1[4]);
+    QCOMPARE(*(file.end() - 1), constData1[11]);
+    QCOMPARE(*file.rbegin(), constData1[11]);
+
+    // Incorrect removing
+    file.remove(file.begin(), file.begin());
+    file.remove(file.end(), file.end());
+    file.remove(file.end(), file.end() + 5);
+    QCOMPARE(size, file.size());
+    QCOMPARE(*file.begin(), constData1[4]);
+    QCOMPARE(*(file.rend() - 1), constData1[4]);
+    QCOMPARE(*(file.end() - 1), constData1[11]);
+    QCOMPARE(*file.rbegin(), constData1[11]);
+
+    // Removing elements from the end
+    file.remove(file.end() - 4, file.end());
+    QCOMPARE(file.size(), constDataSize - 8);
+    QCOMPARE(*file.begin(), constData1[4]);
+    QCOMPARE(*(file.rend() - 1), constData1[4]);
+    QCOMPARE(*(file.end() - 1), constData1[7]);
+    QCOMPARE(*file.rbegin(), constData1[7]);
+
+    // Removing elements from the mid
+    file = BinaryFile<TestRecord1>(bytes);
+    QCOMPARE(file.size(), constDataSize);
+    file.remove(file.begin() + 2, file.end() - 2);
+    QCOMPARE(file.size(), 4);
+    QCOMPARE(*file.begin(), constData1[0]);
+    QCOMPARE(*(file.rend() - 1), constData1[0]);
+    QCOMPARE(*(file.begin() + 1), constData1[1]);
+    QCOMPARE(*(file.rend() - 2), constData1[1]);
+    QCOMPARE(*(file.end() - 2), constData1[10]);
+    QCOMPARE(*(file.rbegin() + 1), constData1[10]);
+    QCOMPARE(*(file.end() - 1), constData1[11]);
+    QCOMPARE(*file.rbegin(), constData1[11]);
+}
+
+void GenTestClass::binaryFileRemoveReverseTest()
+{
+    using namespace detail;
+    using namespace Files;
+    using ReverseRange = BinaryFile<TestRecord1>::Range<BinaryFile<TestRecord1>::reverse_iterator>;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+
+    // Removing elements from the reversed start (end)
+    ReverseRange range1 { file.rbegin(), file.rbegin() + 4 };
+    file.remove(range1);
+    QCOMPARE(file.size(), constDataSize - 4);
+    QCOMPARE(*file.rbegin(), constData1[7]);
+    QCOMPARE(*(file.end() - 1), constData1[7]);
+    QCOMPARE(*(file.rend() - 1), constData1[0]);
+    QCOMPARE(*file.begin(), constData1[0]);
+
+    // Incorrect removing
+    file.remove(file.rbegin(), file.rbegin());
+    file.remove(file.rend(), file.rend());
+    file.remove(file.rend(), file.rend() + 5);
+    QCOMPARE(file.size(), constDataSize - 4);
+
+    // Removing elements from the reversed end (start)
+    ReverseRange range2 { file.rend() - 4, file.rend() };
+    file.remove(range2);
+    QCOMPARE(file.size(), constDataSize - 8);
+    QCOMPARE(*(file.rend() - 1), constData1[4]);
+    QCOMPARE(*(file.rend() - 1), *file.begin());
+    QCOMPARE(*(file.rend() - 1), file.first());
+    QCOMPARE(*file.rbegin(), constData1[7]);
+    QCOMPARE(*(file.end() - 1), constData1[7]);
+
+    // Removing elements from the reversed mid
+    file = BinaryFile<TestRecord1>(bytes);
+    QCOMPARE(file.size(), constDataSize);
+    file.remove(file.rbegin() + 4, file.rend() - 4);
+    QCOMPARE(file.size(), 8);
+    QCOMPARE(*file.begin(), constData1[0]);
+    QCOMPARE(*(file.rend() - 1), constData1[0]);
+    QCOMPARE(*(file.begin() + 1), constData1[1]);
+    QCOMPARE(*(file.rend() - 2), constData1[1]);
+    QCOMPARE(*(file.end() - 2), constData1[10]);
+    QCOMPARE(*(file.rbegin() + 1), constData1[10]);
+    QCOMPARE(*(file.end() - 1), constData1[11]);
+    QCOMPARE(*file.rbegin(), constData1[11]);
+}
+
+void GenTestClass::binaryFileMoveTest()
+{
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+
+    // Moving elements from the start to the end
+    auto rangeSize = 6;
+    auto result = file.move(file.begin(), file.begin() + rangeSize, file.end());
+    auto fileSize = file.size();
+    QVERIFY(result);
+    QCOMPARE(file.last(), constData1[rangeSize - 1]);
+    QCOMPARE(file.size(), fileSize);
+    int index = 0;
+    for (auto iter = file.end() - 1; iter != file.end() - 1 - rangeSize; --iter, ++index)
+        QCOMPARE(*iter, constData1[rangeSize - (1 + index)]);
+
+    // Moving elements from the start to the mid
+    rangeSize = 2;
+    file = BinaryFile<TestRecord1>(bytes);
+    result = file.move(file.begin(), file.begin() + rangeSize, file.begin() + 4);
+    QVERIFY(result);
+    QCOMPARE(*file.begin(), constData1[2]);
+    QCOMPARE(*(file.begin() + 1), constData1[3]);
+    QCOMPARE(*(file.begin() + 2), constData1[0]);
+    QCOMPARE(*(file.begin() + 3), constData1[1]);
+
+    // Moving elements from the end to the start
+    rangeSize = 4;
+    file = BinaryFile<TestRecord1>(bytes);
+    result = file.move(file.end() - rangeSize, file.end(), file.begin());
+    QVERIFY(result);
+    index = constDataSize - rangeSize;
+    for (auto iter = file.begin(); iter != (file.begin() + rangeSize); ++iter, ++index)
+        QCOMPARE(*iter, constData1[index]);
 }
