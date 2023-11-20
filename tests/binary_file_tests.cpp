@@ -181,7 +181,8 @@ void GenTestClass::binaryFileFindRangeTest()
 
     auto firstRange { decltype(file)::findRange(file.begin(), file.end(), testPredicate) };
     std::ptrdiff_t firstSize = firstRange.end - firstRange.begin;
-    QVERIFY(firstRange.begin != file.begin());
+    QVERIFY(firstRange);
+    QVERIFY(firstRange.begin != file.end());
     QVERIFY(firstRange.end != file.end());
     QCOMPARE(firstSize, 3);
     int index = 6;
@@ -193,7 +194,8 @@ void GenTestClass::binaryFileFindRangeTest()
 
     auto secondRange { file.findRange(testPredicate) };
     std::ptrdiff_t secondSize = secondRange.end - secondRange.begin;
-    QVERIFY(secondRange.begin != file.begin());
+    QVERIFY(secondRange);
+    QVERIFY(secondRange.begin != file.end());
     QVERIFY(secondRange.end != file.end());
     QCOMPARE(secondSize, 3);
     for (auto first = firstRange.begin, second = secondRange.begin; //
@@ -205,7 +207,8 @@ void GenTestClass::binaryFileFindRangeTest()
 
     auto thirdRange { BinaryFile<TestRecord1>::findRange(constFile.begin(), constFile.end(), testPredicate) };
     std::ptrdiff_t thirdSize = thirdRange.end - thirdRange.begin;
-    QVERIFY(thirdRange.begin != constFile.begin());
+    QVERIFY(thirdRange);
+    QVERIFY(thirdRange.begin != constFile.end());
     QVERIFY(thirdRange.end != constFile.end());
     QCOMPARE(thirdSize, 3);
     index = 6;
@@ -217,7 +220,8 @@ void GenTestClass::binaryFileFindRangeTest()
 
     auto fourthRange { constFile.findRange(testPredicate) };
     std::ptrdiff_t fourthSize = fourthRange.end - fourthRange.begin;
-    QVERIFY(fourthRange.begin != constFile.begin());
+    QVERIFY(fourthRange);
+    QVERIFY(fourthRange.begin != constFile.end());
     QVERIFY(fourthRange.end != constFile.end());
     QCOMPARE(fourthSize, 3);
     for (auto third = thirdRange.begin, fourth = fourthRange.begin; //
@@ -230,8 +234,9 @@ void GenTestClass::binaryFileFindRangeTest()
     bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
     BinaryFile<TestRecord1> fileWithoutPattern(bytes);
     auto fifthRange { fileWithoutPattern.findRange(testPredicate) };
-    QVERIFY(fifthRange.begin == fileWithoutPattern.begin());
+    QVERIFY(fifthRange.begin == fileWithoutPattern.end());
     QVERIFY(fifthRange.end == fileWithoutPattern.end());
+    QVERIFY(!fifthRange);
 }
 
 void GenTestClass::binaryFileFindAllRangesTest()

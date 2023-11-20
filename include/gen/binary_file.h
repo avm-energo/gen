@@ -26,6 +26,11 @@ public:
     {
         Iterator begin;
         Iterator end;
+
+        inline operator bool() const noexcept
+        {
+            return (end - begin) > 0;
+        }
     };
 
 private:
@@ -39,7 +44,7 @@ private:
     }
 
 public:
-    explicit BinaryFile() noexcept = delete;
+    explicit BinaryFile() noexcept = default;
 
     explicit inline BinaryFile(const QByteArray &file) noexcept : m_file(file)
     {
@@ -109,6 +114,13 @@ public:
         return *(begin() + (size() - 1));
     }
 
+    /// \brief Обновляет содержимое объекта новым бинарным файлом.
+    inline void update(const QByteArray &newFile) noexcept
+    {
+        m_file = newFile;
+        checking("update calling");
+    }
+
     /// \brief Возвращает копию текущего бинарного файла как
     /// хранилище объектов типа AnotherBinaryRecord.
     template <typename AnotherBinaryRecord> //
@@ -127,7 +139,7 @@ public:
     static Range<Iterator> findRange(Iterator first, Iterator last, Predicate predicate) noexcept
     {
         bool firstFound = false;
-        Range<Iterator> range { first, last };
+        Range<Iterator> range { last, last };
         for (Iterator iter = first; iter != last; ++iter)
         {
             auto predicateResult { predicate(*iter) };
@@ -156,7 +168,7 @@ public:
         while (first != last)
         {
             Range<Iterator> range { findRange(first, last, predicate) };
-            if (range.begin == first && range.end == last)
+            if (!range)
                 break;
             else
             {
