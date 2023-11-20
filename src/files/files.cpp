@@ -9,10 +9,6 @@
 
 constexpr auto LOG_MAX_SIZE = 1048576;
 
-Files::Files()
-{
-}
-
 QString Files::ChooseFileForSave(const QString &res, const QString &filenamestr)
 {
     if (!filenamestr.isEmpty())

@@ -4,17 +4,17 @@
 #include <gen/error.h>
 #include <gen/gen_export.h>
 
-class GENLIB_EXPORT Files
+namespace Files
 {
-public:
-    Files();
-    static QString ChooseFileForSave(const QString &res, const QString &filenamestr = "");
-    static Error::Msg LoadFromFile(const QString &filename, QByteArray &ba);
-    static Error::Msg SaveToFile(const QString &filename, const QByteArray &src);
-    static QStringList Drives();
-    static QStringList SearchForFile(QStringList &di, const QString &filename, bool subdirs = false);
-    static QString GetFirstDriveWithLabel(QStringList &filepaths, const QString &label);
-    static void checkNGzip(QFile *logFile);
-    static bool rotateGzipLogs(const QString &path);
-    static void makePath(const QFile &path);
-};
+
+QString GENLIB_EXPORT ChooseFileForSave(const QString &res, const QString &filenamestr = "");
+Error::Msg GENLIB_EXPORT LoadFromFile(const QString &filename, QByteArray &ba);
+Error::Msg GENLIB_EXPORT SaveToFile(const QString &filename, const QByteArray &src);
+QStringList GENLIB_EXPORT Drives();
+QStringList GENLIB_EXPORT SearchForFile(QStringList &di, const QString &filename, bool subdirs = false);
+QString GENLIB_EXPORT GetFirstDriveWithLabel(QStringList &filepaths, const QString &label);
+void GENLIB_EXPORT checkNGzip(QFile *logFile);
+bool GENLIB_EXPORT rotateGzipLogs(const QString &path);
+void GENLIB_EXPORT makePath(const QFile &path);
+
+}; // namespace Files
