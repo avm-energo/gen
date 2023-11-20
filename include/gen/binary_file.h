@@ -7,7 +7,7 @@
 namespace Files
 {
 
-/// \brief Zero-overhead представление структурированных бинарных файлов
+/// \brief Zero-overhead представление структурированных бинарных файлов.
 template <typename BinaryRecord> //
 class BinaryFile
 {
@@ -17,10 +17,10 @@ public:
     typedef const value_type *const_iterator;
     typedef value_type &reference;
     typedef const value_type &const_reference;
-    typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::size_t size_type;
     typedef std::ptrdiff_t difference_type;
 
+    /// \brief Структура для представления диапазона итерируемых данных.
     template <typename Iterator> //
     struct Range
     {
@@ -32,52 +32,10 @@ private:
     QByteArray m_file;
     static constexpr inline auto s_recordSize = sizeof(value_type);
 
+    /// \brief Функция для проверки валидности внутренних данных.
     inline void checking(const char *where) const noexcept
     {
         Q_ASSERT_X(m_file.size() % s_recordSize == 0, where, "Incorrect file size");
-    }
-
-    inline void removeImpl(iterator first, iterator last) noexcept
-    {
-        difference_type index = (first - begin()) * s_recordSize;
-        difference_type length = (last - first) * s_recordSize;
-        m_file.remove(index, length);
-        checking("RemoveImpl calling");
-    }
-
-    inline void removeImpl(reverse_iterator first, reverse_iterator last) noexcept
-    {
-        difference_type index = (rend() - last) * s_recordSize;
-        difference_type length = (last - first) * s_recordSize;
-        m_file.remove(index, length);
-        checking("RemoveImpl calling");
-    }
-
-    [[nodiscard]] inline bool moveImpl(iterator srcBegin, iterator srcEnd, iterator dst) noexcept
-    {
-        difference_type length = (srcEnd - srcBegin) * s_recordSize;
-        difference_type index = (dst - begin()) * s_recordSize;
-        index = ((dst - srcBegin) > 0) ? (index - length) : index;
-        if ((srcBegin == begin() && srcEnd == end()) ||                //
-            (dst >= srcBegin && dst <= srcEnd) || (dst == srcBegin) || //
-            (dst == srcEnd) || (length <= 0) || (index < 0) ||         //
-            (dst < begin()) || (dst > end()))
-            return false;
-
-        QByteArray tempRange(length, 0);
-        std::copy(srcBegin, srcEnd, reinterpret_cast<iterator>(tempRange.data()));
-        removeImpl(srcBegin, srcEnd);
-        m_file.insert(index, tempRange);
-        checking("moveImpl calling");
-        return true;
-    }
-
-    [[nodiscard]] inline bool moveImpl( //
-        reverse_iterator srcBegin,      //
-        reverse_iterator srcEnd,        //
-        reverse_iterator dst) noexcept  //
-    {
-        return false;
     }
 
 public:
@@ -93,67 +51,78 @@ public:
         checking("BinaryFile c-tor calling");
     }
 
+    /// \brief Возвращает количество элементов типа BinaryRecord, хранимых в бинарном файле.
     inline size_type size() const noexcept
     {
         return m_file.size() / s_recordSize;
     }
 
+    /// \brief Возвращает итератор на начало бинарного файла.
     inline iterator begin() noexcept
     {
         return reinterpret_cast<iterator>(m_file.data());
     }
 
+    /// \brief Возвращает итератор на конец бинарного файла.
     inline iterator end() noexcept
     {
         return (begin() + size());
     }
 
+    /// \brief Возвращает константный итератор на начало бинарного файла.
     inline const_iterator begin() const noexcept
     {
         return reinterpret_cast<const_iterator>(m_file.constData());
     }
 
+    /// \brief Возвращает константный итератор на конец бинарного файла.
     inline const_iterator end() const noexcept
     {
         return (begin() + size());
     }
 
-    inline reverse_iterator rbegin() noexcept
-    {
-        return std::make_reverse_iterator(end());
-    }
-
-    inline reverse_iterator rend() noexcept
-    {
-        return std::make_reverse_iterator(begin());
-    }
-
+    /// \brief Возвращает ссылку на первый элемент типа
+    /// BinaryRecord, хранимого в бинарном файле.
     inline reference first() noexcept
     {
         return *begin();
     }
 
+    /// \brief Возвращает константную ссылку на первый элемент
+    /// типа BinaryRecord, хранимого в бинарном файле.
     inline const_reference first() const noexcept
     {
         return *begin();
     }
 
+    /// \brief Возвращает ссылку на последний элемент типа
+    /// BinaryRecord, хранимого в бинарном файле.
     inline reference last() noexcept
     {
         return *(begin() + (size() - 1));
     }
 
+    /// \brief Возвращает константную ссылку на последний элемент
+    /// типа BinaryRecord, хранимого в бинарном файле.
     inline const_reference last() const noexcept
     {
         return *(begin() + (size() - 1));
     }
 
+    /// \brief Возвращает копию текущего бинарного файла как
+    /// хранилище объектов типа AnotherBinaryRecord.
     template <typename AnotherBinaryRecord> //
     inline BinaryFile<AnotherBinaryRecord> copyAs() const noexcept
     {
         return BinaryFile<AnotherBinaryRecord>(m_file);
     }
 
+    /// \brief Возвращает первый найденный диапазон элементов, для
+    /// которых переданный унарный предикат возвращает true.
+    /// \param first[in] - итератор на начало поиска диапазона.
+    /// \param last[in] - итератор на конец поиска диапазона.
+    /// \param predicate[in] - унарный предикат, принимающий константную
+    /// ссылку на элемент и возвращающий true или false в зависимости от внутренней логики.
     template <typename Iterator, typename Predicate> //
     static Range<Iterator> findRange(Iterator first, Iterator last, Predicate predicate) noexcept
     {
@@ -176,6 +145,9 @@ public:
         return range;
     }
 
+    /// \brief Возвращает динамический массив из всех найденных диапазонов
+    /// элементов, для которых переданный унарный предикат возвращает true.
+    /// \see findRange
     template <typename Iterator, typename Predicate> //
     static std::vector<Range<Iterator>> findAllRanges(Iterator first, Iterator last, Predicate predicate) noexcept
     {
@@ -219,26 +191,47 @@ public:
         return BinaryFile<BinaryRecord>::findAllRanges(begin(), end(), p);
     }
 
-    template <typename Iterator> //
-    inline void remove(Iterator first, Iterator last) noexcept
+    /// \brief Удаляет из бинарного файла все записи в интервале [first, last).
+    inline void remove(iterator first, iterator last) noexcept
     {
-        removeImpl(first, last);
+        Q_ASSERT(last >= first);
+        difference_type index = (first - begin()) * s_recordSize;
+        difference_type length = (last - first) * s_recordSize;
+        m_file.remove(index, length);
+        checking("remove calling");
     }
 
-    template <typename Iterator> //
-    inline void remove(const Range<Iterator> &range) noexcept
+    /// \brief Удаляет из бинарного файла все записи в переданном диапазоне.
+    inline void remove(const Range<iterator> &range) noexcept
     {
         remove(range.begin, range.end);
     }
 
-    template <typename Iterator> //
-    [[nodiscard]] inline bool move(Iterator srcBegin, Iterator srcEnd, Iterator dst) noexcept
+    /// \brief Перемещает все записи из интервала [first, last) на
+    /// позицию перед элементом, на который указывает итератор dst.
+    [[nodiscard]] inline bool move(iterator srcBegin, iterator srcEnd, iterator dst) noexcept
     {
-        return moveImpl(srcBegin, srcEnd, dst);
+        // Проверки на валидность диапазона
+        difference_type length = (srcEnd - srcBegin) * s_recordSize;
+        difference_type index = (dst - begin()) * s_recordSize;
+        index = ((dst - srcBegin) > 0) ? (index - length) : index;
+        if ((srcBegin == begin() && srcEnd == end()) ||                //
+            (dst >= srcBegin && dst <= srcEnd) || (dst == srcBegin) || //
+            (dst == srcEnd) || (length <= 0) || (index < 0) ||         //
+            (dst < begin()) || (dst > end()))
+            return false;
+
+        QByteArray tempRange(length, 0);
+        std::copy(srcBegin, srcEnd, reinterpret_cast<iterator>(tempRange.data()));
+        remove(srcBegin, srcEnd);
+        m_file.insert(index, tempRange);
+        checking("move calling");
+        return true;
     }
 
-    template <typename Iterator> //
-    [[nodiscard]] inline bool move(const Range<Iterator> &range, Iterator dst) noexcept
+    /// \brief Перемещает все записи из переданного диапазона на
+    /// позицию перед элементом, на который указывает итератор dst.
+    [[nodiscard]] inline bool move(const Range<iterator> &range, iterator dst) noexcept
     {
         return move(range.begin, range.end, dst);
     }

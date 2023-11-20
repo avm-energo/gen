@@ -135,20 +135,6 @@ void GenTestClass::binaryFileConstIterTest()
     }
 }
 
-void GenTestClass::binaryFileReverseIterTest()
-{
-    using namespace detail;
-    using namespace Files;
-    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
-    BinaryFile<TestRecord1> file(bytes);
-    int index = constDataSize - 1;
-    for (auto iter = file.rbegin(); iter != file.rend(); ++iter)
-    {
-        QCOMPARE(*iter, detail::constData1[index]);
-        --index;
-    }
-}
-
 void GenTestClass::binaryFileFirstLastTest()
 {
     using namespace detail;
@@ -248,28 +234,6 @@ void GenTestClass::binaryFileFindRangeTest()
     QVERIFY(fifthRange.end == fileWithoutPattern.end());
 }
 
-void GenTestClass::binaryFileFindReverseRangeTest()
-{
-    using namespace detail;
-    using namespace Files;
-    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData2[0]), arrayDataSize);
-    BinaryFile<TestRecord1> file(bytes);
-    auto firstRange { decltype(file)::findRange(file.rbegin(), file.rend(), testPredicate) };
-    int index = 8;
-    for (auto iter = firstRange.begin; iter != firstRange.end; ++iter, --index)
-    {
-        QVERIFY(testPredicate(*iter));
-        QCOMPARE(*iter, constData2[index]);
-    }
-
-    bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
-    BinaryFile<TestRecord1> fileWithoutPattern(bytes);
-    auto secondRange { decltype(fileWithoutPattern)::findRange( //
-        fileWithoutPattern.rbegin(), fileWithoutPattern.rend(), testPredicate) };
-    QVERIFY(secondRange.begin == fileWithoutPattern.rbegin());
-    QVERIFY(secondRange.end == fileWithoutPattern.rend());
-}
-
 void GenTestClass::binaryFileFindAllRangesTest()
 {
     using namespace detail;
@@ -320,9 +284,7 @@ void GenTestClass::binaryFileRemoveTest()
     auto size = file.size();
     QCOMPARE(size, constDataSize - 4);
     QCOMPARE(*file.begin(), constData1[4]);
-    QCOMPARE(*(file.rend() - 1), constData1[4]);
     QCOMPARE(*(file.end() - 1), constData1[11]);
-    QCOMPARE(*file.rbegin(), constData1[11]);
 
     // Incorrect removing
     file.remove(file.begin(), file.begin());
@@ -330,17 +292,13 @@ void GenTestClass::binaryFileRemoveTest()
     file.remove(file.end(), file.end() + 5);
     QCOMPARE(size, file.size());
     QCOMPARE(*file.begin(), constData1[4]);
-    QCOMPARE(*(file.rend() - 1), constData1[4]);
     QCOMPARE(*(file.end() - 1), constData1[11]);
-    QCOMPARE(*file.rbegin(), constData1[11]);
 
     // Removing elements from the end
     file.remove(file.end() - 4, file.end());
     QCOMPARE(file.size(), constDataSize - 8);
     QCOMPARE(*file.begin(), constData1[4]);
-    QCOMPARE(*(file.rend() - 1), constData1[4]);
     QCOMPARE(*(file.end() - 1), constData1[7]);
-    QCOMPARE(*file.rbegin(), constData1[7]);
 
     // Removing elements from the mid
     file = BinaryFile<TestRecord1>(bytes);
@@ -348,71 +306,18 @@ void GenTestClass::binaryFileRemoveTest()
     file.remove(file.begin() + 2, file.end() - 2);
     QCOMPARE(file.size(), 4);
     QCOMPARE(*file.begin(), constData1[0]);
-    QCOMPARE(*(file.rend() - 1), constData1[0]);
     QCOMPARE(*(file.begin() + 1), constData1[1]);
-    QCOMPARE(*(file.rend() - 2), constData1[1]);
     QCOMPARE(*(file.end() - 2), constData1[10]);
-    QCOMPARE(*(file.rbegin() + 1), constData1[10]);
     QCOMPARE(*(file.end() - 1), constData1[11]);
-    QCOMPARE(*file.rbegin(), constData1[11]);
 }
 
-void GenTestClass::binaryFileRemoveReverseTest()
+void GenTestClass::binaryFileMoveFromStartToEndTest()
 {
-    using namespace detail;
-    using namespace Files;
-    using ReverseRange = BinaryFile<TestRecord1>::Range<BinaryFile<TestRecord1>::reverse_iterator>;
-    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
-    BinaryFile<TestRecord1> file(bytes);
-
-    // Removing elements from the reversed start (end)
-    ReverseRange range1 { file.rbegin(), file.rbegin() + 4 };
-    file.remove(range1);
-    QCOMPARE(file.size(), constDataSize - 4);
-    QCOMPARE(*file.rbegin(), constData1[7]);
-    QCOMPARE(*(file.end() - 1), constData1[7]);
-    QCOMPARE(*(file.rend() - 1), constData1[0]);
-    QCOMPARE(*file.begin(), constData1[0]);
-
-    // Incorrect removing
-    file.remove(file.rbegin(), file.rbegin());
-    file.remove(file.rend(), file.rend());
-    file.remove(file.rend(), file.rend() + 5);
-    QCOMPARE(file.size(), constDataSize - 4);
-
-    // Removing elements from the reversed end (start)
-    ReverseRange range2 { file.rend() - 4, file.rend() };
-    file.remove(range2);
-    QCOMPARE(file.size(), constDataSize - 8);
-    QCOMPARE(*(file.rend() - 1), constData1[4]);
-    QCOMPARE(*(file.rend() - 1), *file.begin());
-    QCOMPARE(*(file.rend() - 1), file.first());
-    QCOMPARE(*file.rbegin(), constData1[7]);
-    QCOMPARE(*(file.end() - 1), constData1[7]);
-
-    // Removing elements from the reversed mid
-    file = BinaryFile<TestRecord1>(bytes);
-    QCOMPARE(file.size(), constDataSize);
-    file.remove(file.rbegin() + 4, file.rend() - 4);
-    QCOMPARE(file.size(), 8);
-    QCOMPARE(*file.begin(), constData1[0]);
-    QCOMPARE(*(file.rend() - 1), constData1[0]);
-    QCOMPARE(*(file.begin() + 1), constData1[1]);
-    QCOMPARE(*(file.rend() - 2), constData1[1]);
-    QCOMPARE(*(file.end() - 2), constData1[10]);
-    QCOMPARE(*(file.rbegin() + 1), constData1[10]);
-    QCOMPARE(*(file.end() - 1), constData1[11]);
-    QCOMPARE(*file.rbegin(), constData1[11]);
-}
-
-void GenTestClass::binaryFileMoveTest()
-{
-    using namespace detail;
-    using namespace Files;
-    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
-    BinaryFile<TestRecord1> file(bytes);
-
     // Moving elements from the start to the end
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
     auto rangeSize = 6;
     auto result = file.move(file.begin(), file.begin() + rangeSize, file.end());
     auto fileSize = file.size();
@@ -422,23 +327,107 @@ void GenTestClass::binaryFileMoveTest()
     int index = 0;
     for (auto iter = file.end() - 1; iter != file.end() - 1 - rangeSize; --iter, ++index)
         QCOMPARE(*iter, constData1[rangeSize - (1 + index)]);
+}
 
+void GenTestClass::binaryFileMoveFromStartToMidTest()
+{
     // Moving elements from the start to the mid
-    rangeSize = 2;
-    file = BinaryFile<TestRecord1>(bytes);
-    result = file.move(file.begin(), file.begin() + rangeSize, file.begin() + 4);
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    auto rangeSize = 2;
+    auto result = file.move(file.begin(), file.begin() + rangeSize, file.begin() + 4);
     QVERIFY(result);
     QCOMPARE(*file.begin(), constData1[2]);
     QCOMPARE(*(file.begin() + 1), constData1[3]);
     QCOMPARE(*(file.begin() + 2), constData1[0]);
     QCOMPARE(*(file.begin() + 3), constData1[1]);
+}
 
+void GenTestClass::binaryFileMoveFromEndToStartTest()
+{
     // Moving elements from the end to the start
-    rangeSize = 4;
-    file = BinaryFile<TestRecord1>(bytes);
-    result = file.move(file.end() - rangeSize, file.end(), file.begin());
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    auto rangeSize = 4, index = constDataSize - rangeSize;
+    auto result = file.move(file.end() - rangeSize, file.end(), file.begin());
     QVERIFY(result);
-    index = constDataSize - rangeSize;
     for (auto iter = file.begin(); iter != (file.begin() + rangeSize); ++iter, ++index)
         QCOMPARE(*iter, constData1[index]);
+}
+
+void GenTestClass::binaryFileMoveFromEndToMidTest()
+{
+    // Moving elements from the end to the mid
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    int rangeSize = 3, pos = 4, index = constDataSize - rangeSize;
+    auto result = file.move(file.end() - rangeSize, file.end(), file.begin() + pos);
+    QVERIFY(result);
+    for (auto iter = file.begin() + pos; iter != (file.begin() + pos + rangeSize); ++iter, ++index)
+        QCOMPARE(*iter, constData1[index]);
+}
+
+void GenTestClass::binaryFileMoveFromMidToStartTest()
+{
+    // Moving elements from the mid to the start
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    int rangeSize = 5, pos = 5, index = pos;
+    auto result = file.move(file.begin() + pos, file.begin() + pos + rangeSize, file.begin());
+    QVERIFY(result);
+    for (auto iter = file.begin(); iter != file.begin() + rangeSize; ++iter, ++index)
+        QCOMPARE(*iter, constData1[index]);
+}
+
+void GenTestClass::binaryFileMoveFromMidToEndTest()
+{
+    // Moving elements from the mid to the end
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    int rangeSize = 6, pos = 3, index = pos;
+    auto result = file.move(file.begin() + pos, file.begin() + pos + rangeSize, file.end());
+    QVERIFY(result);
+    for (auto iter = file.end() - rangeSize; iter != file.end(); ++iter, ++index)
+        QCOMPARE(*iter, constData1[index]);
+}
+
+/*******************************************************
+ *        An Explanation for Future Generations        *
+ *         Given BinaryFile with 12 elements:          *
+ * | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | *
+ *                 -------------       ^               *
+ *                       |             |               *
+ *                       --------------|               *
+ *   Moving 3 elements from the source index 4 to the  *
+ *   destination index 9 gives next expected result:   *
+ * | 0 | 1 | 2 | 3 | 7 | 8 | 4 | 5 | 6 | 9 | 10 | 11 | *
+ *                         -------------               *
+ *******************************************************/
+void GenTestClass::binaryFileMoveFromMidToPosTest()
+{
+    // Moving elements from the mid to the another pos
+    using namespace detail;
+    using namespace Files;
+    auto bytes = QByteArray::fromRawData(reinterpret_cast<const char *>(&constData1[0]), arrayDataSize);
+    BinaryFile<TestRecord1> file(bytes);
+    const int rangeSize = 3, pos = 4, destPos = pos + rangeSize + 2;
+    auto result = file.move(file.begin() + pos, file.begin() + pos + rangeSize, file.begin() + destPos);
+    QVERIFY(result);
+    QCOMPARE(file.first(), constData1[0]);
+    QCOMPARE(*(file.begin() + 4), constData1[7]);
+    QCOMPARE(*(file.begin() + 5), constData1[8]);
+    QCOMPARE(*(file.begin() + 6), constData1[4]);
+    QCOMPARE(*(file.begin() + 7), constData1[5]);
+    QCOMPARE(*(file.begin() + 8), constData1[6]);
+    QCOMPARE(file.last(), constData1[constDataSize - 1]);
 }
