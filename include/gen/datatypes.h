@@ -13,8 +13,8 @@ namespace DataTypes
 
 enum Quality : quint8
 {
-    Bad = 8,
-    Good = 192
+    Good = 0,
+    Bad = 0x80
 };
 
 enum DataBlockTypes
