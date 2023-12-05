@@ -140,17 +140,4 @@ public:
         std::transform(std::begin(list), std::end(list), std::back_inserter(newList), [](T *item) { return *item; });
         return newList;
     }
-
-    /// \brief Returns count of bit set in input data.
-    template <typename T, size_t size = sizeof(T), typename = std::enable_if<is_simple_v<T>, bool>> //
-    static int CountSetBits(T N)
-    {
-        int count = 0;
-        for (int i = 0; i < sizeof(T) * 8; i++)
-        {
-            if (N & (1 << i))
-                count++;
-        }
-        return count;
-    }
 };
