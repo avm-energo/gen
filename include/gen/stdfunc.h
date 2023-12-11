@@ -2,7 +2,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QValidator>
 #include <cmath>
 #include <functional>
 #include <gen/gen_export.h>
@@ -102,7 +101,6 @@ public:
     static quint32 CheckPort(quint32 ip4Addr, quint16 port);
 
     static void RemoveSubstr(std::string &str, std::string &substr);
-    static QValidator *getRegExpValidator(const QString &pattern, QObject *parent = nullptr);
 
     /*! \brief Template function for joining items into QList
      *  \param list[out] QList for joining input item
