@@ -54,6 +54,25 @@ void LogClass::warning(const QString &str)
         writeFile(str, "Warning");
 }
 
+void LogClass::logging(const QString &message, const LogLevel level)
+{
+    switch (level)
+    {
+    case LogLevel::Info:
+        info(message);
+        break;
+    case LogLevel::Warning:
+        warning(message);
+        break;
+    case LogLevel::Error:
+        error(message);
+        break;
+    default:
+        // ignore other cases
+        break;
+    }
+}
+
 void LogClass::intvarvalue(const QString &var, int value)
 {
     if (m_canLog)

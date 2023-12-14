@@ -13,6 +13,14 @@ constexpr char logStart[] = "=== Log started ===\n";
 constexpr char logExt[] = "log";
 }
 
+enum class LogLevel : std::uint8_t
+{
+    Info = 0,
+    Warning,
+    Error,
+    Undefined = std::numeric_limits<std::uint8_t>::max()
+};
+
 class GENLIB_EXPORT LogClass
 {
 private:
@@ -30,8 +38,9 @@ public:
     void error(const QString &str);
     void warning(const QString &str);
     void info(const QString &str);
-    void intvarvalue(const QString &var, int value);
+    void logging(const QString &message, const LogLevel level = LogLevel::Info);
 
+    void intvarvalue(const QString &var, int value);
     void writeFile(const QString &msg, const QString &prepend = "");
     void writeRaw(const QByteArray &ba);
 };
