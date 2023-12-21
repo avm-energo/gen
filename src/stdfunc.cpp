@@ -28,10 +28,8 @@ int StdFunc::m_tuneRequestCount = 0;
 // clang-format off
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtCore/QTextCodec>
-#include <QRegExpValidator>
 #else
 #include <QtCore5Compat/QTextCodec>
-#include <QRegularExpressionValidator>
 #endif
 // clang-format on
 
@@ -340,16 +338,4 @@ void StdFunc::RemoveSubstr(std::string &str, std::string &substr)
     std::string::size_type n = substr.length();
     for (std::string::size_type i = str.find(substr); i != std::string::npos; i = str.find(substr))
         str.erase(i, n);
-}
-
-QValidator *StdFunc::getRegExpValidator(const QString &pattern, QObject *parent)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Qt5 code
-    auto validator = new QRegExpValidator(QRegExp(pattern), parent);
-#else
-    // Qt6 code
-    auto validator = new QRegularExpressionValidator(QRegularExpression(pattern), parent);
-#endif
-    return validator;
 }
