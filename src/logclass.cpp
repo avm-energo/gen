@@ -28,7 +28,10 @@ void LogClass::init(const QString &filename)
         qCritical("Ошибка открытия файла");
     }
     else
+    {
         m_canLog = true;
+        writeRaw(::logStart);
+    }
 }
 
 QString LogClass::getFilename() const noexcept
