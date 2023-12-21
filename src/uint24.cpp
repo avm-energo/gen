@@ -1,6 +1,7 @@
+#include "gen/uint24.h"
+
 #include <QByteArray>
 #include <gen/stdfunc.h>
-#include <gen/uint24.h>
 
 uint24::uint24() : value { 0, 0, 0 }
 {

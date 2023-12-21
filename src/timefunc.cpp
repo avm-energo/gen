@@ -1,7 +1,8 @@
+#include "gen/timefunc.h"
+
 #include <QDateTime>
 #include <QSettings>
 #include <gen/settings.h>
-#include <gen/timefunc.h>
 #include <memory>
 
 TimeFunc::TimeFunc()
@@ -47,11 +48,11 @@ QString TimeFunc::UnixTime64ToString(quint64 utime, QTimeZone tz)
 QString TimeFunc::UnixTime64ToInvStringFractional(quint64 utime, QTimeZone tz)
 {
     quint32 tmpi = utime >> 32;
+    quint32 subSeconds = utime & 0x00000000FFFFFFFF;
     QDateTime tn = QDateTime::fromSecsSinceEpoch(tmpi, tz); // in seconds
-    utime &= 0x00000000FFFFFFFF;
     QString outs = tn.toString("yyyy/MM/dd hh:mm:ss");
-    QString frac = QString::number(utime);
-    frac.truncate(3);
+    QString frac = QString::number(subSeconds / 0x418937);
+    frac = frac.rightJustified(3, '0');
     outs += "." + frac;
     return outs;
 }

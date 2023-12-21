@@ -1,6 +1,7 @@
+#include "gen/logger.h"
+
 #include <gen/errorqueue.h>
 #include <gen/files.h>
-#include <gen/logger.h>
 #include <gen/stdfunc.h>
 #include <iostream>
 

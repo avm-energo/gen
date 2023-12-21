@@ -1,10 +1,11 @@
+#include "gen/logclass.h"
+
 #include <QDataStream>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
 #include <gen/files.h>
-#include <gen/logclass.h>
 #include <gen/stdfunc.h>
 
 LogClass::LogClass() noexcept : m_canLog(false)
@@ -27,7 +28,10 @@ void LogClass::init(const QString &filename)
         qCritical("Ошибка открытия файла");
     }
     else
+    {
         m_canLog = true;
+        writeRaw(::logStart);
+    }
 }
 
 QString LogClass::getFilename() const noexcept
@@ -51,6 +55,25 @@ void LogClass::warning(const QString &str)
 {
     if (m_canLog)
         writeFile(str, "Warning");
+}
+
+void LogClass::logging(const QString &message, const LogLevel level)
+{
+    switch (level)
+    {
+    case LogLevel::Info:
+        info(message);
+        break;
+    case LogLevel::Warning:
+        warning(message);
+        break;
+    case LogLevel::Error:
+        error(message);
+        break;
+    default:
+        // ignore other cases
+        break;
+    }
 }
 
 void LogClass::intvarvalue(const QString &var, int value)
