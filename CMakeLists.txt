@@ -14,16 +14,24 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(GEN_STATIC "Build gen as static library" OFF)
 option(GEN_BUILD_TESTS "Build gen library tests" ON)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(GNUInstallDirs)
 include(DetermineTargetArchitecture)
 include(SetProjectTargetName)
 
+# Setup build type if it's not specified
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
+  message(STATUS "CMAKE_BUILD_TYPE is not specified. Using default: ${CMAKE_BUILD_TYPE}")
+  # Possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
 find_package(QT NAMES Qt6 Qt5)
 find_package(Qt${QT_VERSION_MAJOR}
-  COMPONENTS Core Gui Network Xml REQUIRED
+  COMPONENTS Core Network Xml REQUIRED
 )
 
 if(NOT DEFINED PROJECT_ARCHITECTURE)
@@ -43,7 +51,7 @@ file(GLOB_RECURSE cpp_sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE public_headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 # Library building settings
-if (GEN_STATIC)
+if(GEN_STATIC)
   message(STATUS "GEN STATIC LIBRARY")
   add_library(${PROJECT_NAME} STATIC ${public_headers} ${cpp_sources})
   target_compile_definitions(${PROJECT_NAME} PUBLIC -DHAVE_STATIC_BUILD)
@@ -57,6 +65,26 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DCMAKE_CONFIG)
+
+# Using compile warnings to detect bugs and mistakes
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+else() # # GCC or Clang
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+# Using sanitizers for library in debug build type
+if((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+  set(USING_SANITIZERS ON)
+  if(MSVC)
+    message(STATUS "MSVC version: ${MSVC_VERSION}, toolset version: ${MSVC_TOOLSET_VERSION}")
+  else() # GCC or Clang
+    target_compile_options(${PROJECT_NAME} PRIVATE -fno-omit-frame-pointer -fsanitize=address,undefined -fstack-protector)
+    target_link_options(${PROJECT_NAME}    PRIVATE -fno-omit-frame-pointer -fsanitize=address,undefined -fstack-protector)
+  endif()
+else()
+  set(USING_SANITIZERS OFF)
+endif()
 
 # Set project version as gen target property
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
