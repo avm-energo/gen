@@ -121,6 +121,15 @@ public:
         return QByteArray::fromRawData(reinterpret_cast<const char *>(&value), size);
     }
 
+    template <typename T, std::size_t size = sizeof(T),
+        std::enable_if_t<is_simple_v<T> || std::is_same_v<T, uint24>, bool> = true> //
+    static QByteArray toByteArray(T &&value)
+    {
+        QByteArray retVal(size, 0);
+        *reinterpret_cast<T *>(retVal.data()) = std::move(value);
+        return retVal;
+    }
+
     /// \brief Converts list of known datatype to QVariant list.
     template <typename T> static QVariantList ToVariantList(const QList<T> &list)
     {
