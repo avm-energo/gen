@@ -8,11 +8,14 @@
 
 // idea of https://stackoverflow.com/a/24687161/8524139
 
-template <bool... Bs> using bool_sequence = std::integer_sequence<bool, Bs...>;
+template <bool... Bs> //
+using bool_sequence = std::integer_sequence<bool, Bs...>;
 
-template <bool... Bs> using bool_and = std::is_same<bool_sequence<Bs...>, bool_sequence<(Bs || true)...>>;
+template <bool... Bs> //
+using bool_and = std::is_same<bool_sequence<Bs...>, bool_sequence<(Bs || true)...>>;
 
-template <bool... Bs> using bool_or = std::integral_constant<bool, !bool_and<!Bs...>::value>;
+template <bool... Bs> //
+using bool_or = std::integral_constant<bool, !bool_and<!Bs...>::value>;
 
 namespace std_ext
 {
@@ -22,16 +25,20 @@ using enable_if_any = std::enable_if<bool_or<Bs...>::value, R>;
 template <typename R, bool... Bs> // note: R first, no default :(
 using enable_if_all = std::enable_if<bool_and<Bs...>::value, R>;
 
-template <typename T, typename... Ts> using are_same = bool_and<std::is_same<T, Ts>::value...>;
+template <typename T, typename... Ts> //
+using are_same = bool_and<std::is_same<T, Ts>::value...>;
 
-template <typename Enum> constexpr std::underlying_type_t<Enum> to_underlying(Enum value) noexcept
+template <typename Enum> //
+constexpr std::underlying_type_t<Enum> to_underlying(Enum value) noexcept
 {
     return static_cast<std::underlying_type_t<Enum>>(value);
-};
+}
 
-template <typename...> using to_void = void; // maps everything to void, used in non-evaluated contexts
+template <typename...> //
+using to_void = void;  // maps everything to void, used in non-evaluated contexts
 
-template <typename T, typename = void> struct is_container : std::false_type
+template <typename T, typename = void> //
+struct is_container : std::false_type
 {
 };
 
@@ -68,7 +75,8 @@ static constexpr bool is_variant_alternative()
         return false;
 }
 
-template <class Variant> std::type_info const &variant_type(Variant const &v)
+template <class Variant> //
+std::type_info const &variant_type(Variant const &v)
 {
     return std::visit([](auto &&x) -> decltype(auto) { return typeid(x); }, v);
 }
@@ -108,7 +116,8 @@ inline
 }
 
 // helper type for the visitor
-template <class... Ts> struct overloaded : Ts...
+template <class... Ts> //
+struct overloaded : Ts...
 {
     using Ts::operator()...;
 };

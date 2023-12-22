@@ -17,4 +17,4 @@ void GENLIB_EXPORT checkNGzip(QFile *logFile);
 bool GENLIB_EXPORT rotateGzipLogs(const QString &path);
 void GENLIB_EXPORT makePath(const QFile &path);
 
-}; // namespace Files
+} // namespace Files

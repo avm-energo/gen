@@ -5,7 +5,7 @@
 
 #ifdef __linux__
 #include <ctime>
-Q_DECLARE_METATYPE(timespec);
+Q_DECLARE_METATYPE(timespec)
 #endif
 
 namespace DataTypes
@@ -127,7 +127,7 @@ struct SingleCommand
 
 }
 
-Q_DECLARE_METATYPE(uint24);
+Q_DECLARE_METATYPE(uint24)
 Q_DECLARE_METATYPE(DataTypes::SingleCommand)
 Q_DECLARE_METATYPE(DataTypes::BitStringStruct)
 Q_DECLARE_METATYPE(DataTypes::FloatWithTimeStruct)
