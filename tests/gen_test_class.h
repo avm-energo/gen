@@ -38,8 +38,13 @@ private slots:
     void binaryFileMoveFromMidToEndTest();
     void binaryFileMoveFromMidToPosTest();
 
-    void stdByteArrayTest01();
-    void stdByteArrayTest02();
-    void stdByteArrayTest03();
-    void stdByteArrayTest04();
+    void stdToByteArrayTest01();
+    void stdToByteArrayTest02();
+    void stdToByteArrayTest03();
+    void stdToByteArrayTest04();
+
+    void stdSafeMemoryCopyTest01();
+    void stdSafeMemoryCopyTest02();
+    void stdGetFromByteArrayTest01();
+    void stdGetFromByteArrayTest02();
 };
