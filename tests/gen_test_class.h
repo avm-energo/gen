@@ -38,6 +38,10 @@ private slots:
     void binaryFileMoveFromMidToEndTest();
     void binaryFileMoveFromMidToPosTest();
 
+    void verToStrTest();
+    void strToVerTest();
+    void enumToStrTest();
+
     void stdToByteArrayTest01();
     void stdToByteArrayTest02();
     void stdToByteArrayTest03();

@@ -1,7 +1,33 @@
 #include "gen_test_class.h"
 
 #include <QDebug>
+#include <gen/error.h>
 #include <gen/stdfunc.h>
+
+void GenTestClass::verToStrTest()
+{
+    QString expectedString("3.3-0001");
+    auto realString = StdFunc::VerToStr(50528257);
+    QCOMPARE(expectedString, realString);
+}
+
+void GenTestClass::strToVerTest()
+{
+    quint32 expectedValue = 50528257;
+    auto realValue = StdFunc::StrToVer("3.3-0001");
+    QCOMPARE(expectedValue, realValue);
+    QVERIFY(StdFunc::StrToVer("3.3-0001") > StdFunc::StrToVer("3.3-0000"));
+    QVERIFY(StdFunc::StrToVer("4.3-0001") > StdFunc::StrToVer("3.3-0000"));
+}
+
+void GenTestClass::enumToStrTest()
+{
+    auto err = Error::Msg::CrcError;
+    auto metaEnum = QMetaEnum::fromType<decltype(err)>();
+    QString errStr(metaEnum.valueToKey(err));
+    QString expected = "CrcError";
+    QCOMPARE(errStr, expected);
+}
 
 void GenTestClass::stdToByteArrayTest01()
 {
