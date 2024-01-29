@@ -15,8 +15,8 @@ private:
 public:
     explicit Convertable(const QVariant &data) noexcept;
     explicit Convertable(QVariant &&data) noexcept;
-    explicit Convertable(const Convertable &rhs) noexcept;
-    explicit Convertable(Convertable &&rhs) noexcept;
+    Convertable(const Convertable &rhs) noexcept;
+    Convertable(Convertable &&rhs) noexcept;
 
     Convertable &operator=(const Convertable &rhs) noexcept;
     Convertable &operator=(Convertable &&rhs) noexcept;
