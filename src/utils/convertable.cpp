@@ -31,6 +31,16 @@ Convertable &Convertable::operator=(Convertable &&rhs) noexcept
     return *this;
 }
 
+QVariant &Convertable::operator*() noexcept
+{
+    return m_data;
+}
+
+const QVariant &Convertable::operator*() const noexcept
+{
+    return m_data;
+}
+
 Convertable::operator bool() const noexcept
 {
     return m_data.toBool();

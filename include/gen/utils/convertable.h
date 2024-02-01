@@ -28,6 +28,11 @@ public:
     /// \brief Assignment operator overloading with a rvalue.
     Convertable &operator=(Convertable &&rhs) noexcept;
 
+    /// \brief Indirection operator overloading.
+    QVariant &operator*() noexcept;
+    /// \brief Indirection operator overloading (for const type).
+    const QVariant &operator*() const noexcept;
+
     /// \brief Implicit type conversion to bool value.
     operator bool() const noexcept;
     /// \brief Implicit type conversion to string value.
