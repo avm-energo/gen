@@ -17,6 +17,12 @@ QString Files::ChooseFileForSave(const QString &res, const QString &filenamestr)
         return res;
 }
 
+bool Files::isFileExist(const QString &filename)
+{
+    auto dir = QDir(StdFunc::GetSystemHomeDir());
+    return QFile::exists(dir.filePath(filename));
+}
+
 Error::Msg Files::LoadFromFile(const QString &filename, QByteArray &ba)
 {
     if (filename.isEmpty())

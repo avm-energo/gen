@@ -8,6 +8,7 @@ namespace Files
 {
 
 QString GENLIB_EXPORT ChooseFileForSave(const QString &res, const QString &filenamestr = "");
+bool GENLIB_EXPORT isFileExist(const QString &filename);
 Error::Msg GENLIB_EXPORT LoadFromFile(const QString &filename, QByteArray &ba);
 Error::Msg GENLIB_EXPORT SaveToFile(const QString &filename, const QByteArray &src);
 QStringList GENLIB_EXPORT Drives();
