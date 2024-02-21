@@ -25,7 +25,7 @@ else() # # GCC or Clang
 endif()
 
 # Using sanitizers for tests if gen using sanitizers
-if(USING_SANITIZERS)
+if(GEN_USING_SANITIZERS)
   if(MSVC)
     message(STATUS "MSVC version: ${MSVC_VERSION}, toolset version: ${MSVC_TOOLSET_VERSION}")
   else() # GCC or Clang

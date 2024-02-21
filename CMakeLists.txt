@@ -12,6 +12,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 option(GEN_STATIC "Build gen as static library" OFF)
+option(GEN_USING_SANITIZERS "Using ASan and UBSan for gen and its tests" ON)
 option(GEN_BUILD_TESTS "Build gen library tests" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
@@ -74,16 +75,13 @@ else() # # GCC or Clang
 endif()
 
 # Using sanitizers for library in debug build type
-if((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
-  set(USING_SANITIZERS ON)
+if(GEN_USING_SANITIZERS)
   if(MSVC)
     message(STATUS "MSVC version: ${MSVC_VERSION}, toolset version: ${MSVC_TOOLSET_VERSION}")
   else() # GCC or Clang
     target_compile_options(${PROJECT_NAME} PRIVATE -fno-omit-frame-pointer -fsanitize=address,undefined -fstack-protector)
     target_link_options(${PROJECT_NAME}    PRIVATE -fno-omit-frame-pointer -fsanitize=address,undefined -fstack-protector)
   endif()
-else()
-  set(USING_SANITIZERS OFF)
 endif()
 
 # Set project version as gen target property
