@@ -30,19 +30,14 @@ void LogClass::init(const QString &filename)
     else
     {
         m_canLog = true;
-        writeRaw(::logStart);
+        info(::logStart);
+        // writeRaw(::logStart);
     }
 }
 
 QString LogClass::getFilename() const noexcept
 {
     return m_file.fileName();
-}
-
-void LogClass::error(const QString &str)
-{
-    if (m_canLog)
-        writeFile(str, "Error");
 }
 
 void LogClass::info(const QString &str)
@@ -57,6 +52,18 @@ void LogClass::warning(const QString &str)
         writeFile(str, "Warning");
 }
 
+void LogClass::error(const QString &str)
+{
+    if (m_canLog)
+        writeFile(str, "Error");
+}
+
+void LogClass::debug(const QString &str)
+{
+    if (m_canLog)
+        writeFile(str, "Debug");
+}
+
 void LogClass::logging(const QString &message, const LogLevel level)
 {
     switch (level)
@@ -69,6 +76,9 @@ void LogClass::logging(const QString &message, const LogLevel level)
         break;
     case LogLevel::Error:
         error(message);
+        break;
+    case LogLevel::Debug:
+        debug(message);
         break;
     default:
         // ignore other cases
