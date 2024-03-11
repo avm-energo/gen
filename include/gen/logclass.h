@@ -9,7 +9,7 @@
 
 namespace
 {
-constexpr char logStart[] = "=== Log started ===\n";
+constexpr char logStart[] = "=== Log started ===";
 constexpr char logExt[] = "log";
 }
 
@@ -41,9 +41,5 @@ public:
     void error(const QString &str);
     void debug(const QString &str);
     void logging(const QString &message, const LogLevel level = LogLevel::Info);
-
-    void intvarvalue(const QString &var, int value);
     void writeFile(const QString &msg, const QString &prepend = "");
-
-    void writeRaw(const QByteArray &ba);
 };

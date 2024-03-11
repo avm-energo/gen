@@ -81,15 +81,9 @@ void LogClass::logging(const QString &message, const LogLevel level)
         debug(message);
         break;
     default:
-        // ignore other cases
+        qWarning("Undefined logging level");
         break;
     }
-}
-
-void LogClass::intvarvalue(const QString &var, int value)
-{
-    if (m_canLog)
-        writeFile(QString::number(value), var);
 }
 
 void LogClass::writeFile(const QString &msg, const QString &prepend)
@@ -105,21 +99,4 @@ void LogClass::writeFile(const QString &msg, const QString &prepend)
         m_file.flush();
         Files::checkNGzip(&m_file);
     }
-}
-
-// thread-safe function
-void LogClass::writeRaw(const QByteArray &ba)
-{
-    QMutexLocker locker(&m_mutex);
-    QString tmps = "[" + QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss.zzz") + "] ";
-    int writtenSize;
-    writtenSize = m_file.write(tmps.toLocal8Bit());
-    if (writtenSize == -1)
-        return;
-    writtenSize = m_file.write(ba);
-    if (writtenSize == -1)
-        return;
-    if (!m_file.flush())
-        return;
-    Files::checkNGzip(&m_file);
 }
