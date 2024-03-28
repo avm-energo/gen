@@ -13,7 +13,7 @@ private:
     void lzmaProcess(QByteArray &input, QByteArray &output, LzmaBaseStream *stream, bool isDecompress);
 
 public:
-    explicit LzmaUtil(token token);
+    explicit LzmaUtil(token);
     QByteArray compress(QByteArray &input);
     QByteArray decompress(QByteArray &input);
 };

@@ -121,6 +121,17 @@ public:
         return QByteArray::fromRawData(reinterpret_cast<const char *>(&value), size);
     }
 
+    /// \brief Converts an rvalue of trivial data type to the byte array.
+    /// \param value[in] An rvalue of simple data type.
+    template <typename T, std::size_t size = sizeof(T),
+        std::enable_if_t<is_simple_v<T> || std::is_same_v<T, uint24>, bool> = true> //
+    static QByteArray toByteArray(T &&value)
+    {
+        QByteArray retVal(size, 0);
+        *reinterpret_cast<T *>(retVal.data()) = std::move(value);
+        return retVal;
+    }
+
     /// \brief Converts list of known datatype to QVariant list.
     template <typename T> static QVariantList ToVariantList(const QList<T> &list)
     {
@@ -137,5 +148,26 @@ public:
         newList.reserve(list.size());
         std::transform(std::begin(list), std::end(list), std::back_inserter(newList), [](T *item) { return *item; });
         return newList;
+    }
+
+    /// \brief Safe memory copying from the a byte array to a given simple data type object.
+    template <typename T, std::size_t count = sizeof(T), std::enable_if_t<is_simple_v<T>, bool> = true> //
+    static inline void safeMemoryCopy(T &dst, const QByteArray &src, const std::size_t startIndex) noexcept
+    {
+        if (static_cast<std::size_t>(src.size()) >= startIndex + count)
+        {
+            auto dstBegin = reinterpret_cast<std::uint8_t *>(&dst);
+            auto srcBegin = reinterpret_cast<const std::uint8_t *>(src.constData()) + startIndex;
+            std::copy_n(srcBegin, count, dstBegin);
+        }
+    }
+
+    /// \brief Returns an object of T type from a given byte array at a given index position.
+    template <typename T, std::enable_if_t<is_simple_v<T>, bool> = true> //
+    static inline T getFromByteArray(const QByteArray &bytes, const std::size_t startIndex = 0) noexcept
+    {
+        T value {};
+        safeMemoryCopy(value, bytes, startIndex);
+        return value;
     }
 };

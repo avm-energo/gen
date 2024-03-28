@@ -11,24 +11,16 @@ public:
 
 private slots:
     // вызывается перед первой тестовой функцией
-    void initTestCase()
-    {
-    }
+    void initTestCase();
 
     // вызывается перед каждой тестовой функцией
-    void init()
-    {
-    }
+    void init();
 
     // вызывается после каждой тестовой функции
-    void cleanup()
-    {
-    }
+    void cleanup();
 
     // вызывается после последней тестовой функции
-    void cleanupTestCase()
-    {
-    }
+    void cleanupTestCase();
 
     void binaryFileCtorSizeTest();
     void binaryFileIterTest();
@@ -45,4 +37,18 @@ private slots:
     void binaryFileMoveFromMidToStartTest();
     void binaryFileMoveFromMidToEndTest();
     void binaryFileMoveFromMidToPosTest();
+
+    void verToStrTest();
+    void strToVerTest();
+    void enumToStrTest();
+
+    void stdToByteArrayTest01();
+    void stdToByteArrayTest02();
+    void stdToByteArrayTest03();
+    void stdToByteArrayTest04();
+
+    void stdSafeMemoryCopyTest01();
+    void stdSafeMemoryCopyTest02();
+    void stdGetFromByteArrayTest01();
+    void stdGetFromByteArrayTest02();
 };

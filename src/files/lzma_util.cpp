@@ -4,7 +4,7 @@
 
 constexpr auto bufferSize = BUFSIZ;
 
-LzmaUtil::LzmaUtil(token token) : state(LZMA_OK), action(LZMA_RUN), inbuf(BUFSIZ, 0x00), outbuf(BUFSIZ, 0x00)
+LzmaUtil::LzmaUtil(token) : state(LZMA_OK), action(LZMA_RUN), inbuf(BUFSIZ, 0x00), outbuf(BUFSIZ, 0x00)
 {
 }
 

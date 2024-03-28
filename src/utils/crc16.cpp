@@ -69,7 +69,7 @@ void CRC16::update(const QByteArray &data)
 
 void CRC16::update(const quint8 *data, const quint32 size)
 {
-    for (auto i = 0; i < size; i++)
+    for (std::size_t i = 0; i < size; i++)
         updateChecksum(data[i]);
 }
 

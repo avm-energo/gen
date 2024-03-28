@@ -1,58 +1,41 @@
 #pragma once
 
-#include <bitset>
 #include <cstdint>
 #include <gen/gen_export.h>
+#include <gen/integers.h>
 
 constexpr unsigned int UINT24_MAX = 16777215;
-constexpr inline std::size_t elements = 3;
 
-class QByteArray;
-
-class GENLIB_EXPORT uint24
+class GENLIB_EXPORT uint24 final
 {
-protected:
-    std::uint8_t value[elements];
+private:
+    constexpr inline static std::size_t elements = 3;
+    u8 value[elements];
 
 public:
-    uint24();
-    uint24(const uint24 &val);
-    uint24(const uint32_t &val);
-    uint24 &operator=(const uint24 &input);
-    uint24 &operator=(const std::uint32_t input);
+    explicit uint24() noexcept;
+    explicit uint24(const uint24 &val) noexcept;
+    explicit uint24(const u32 val) noexcept;
 
-    operator std::uint32_t() const;
-    operator std::uint16_t() const;
-    uint24 operator+(const uint24 &val) const;
-    uint24 operator-(const uint24 &val) const;
-    uint24 operator*(const uint24 &val) const;
-    uint24 operator/(const uint24 &val) const;
-    uint24 &operator+=(const uint24 &val);
-    uint24 &operator-=(const uint24 &val);
-    uint24 &operator*=(const uint24 &val);
-    uint24 &operator/=(const uint24 &val);
+    uint24 &operator=(const uint24 &input) noexcept;
+    uint24 &operator=(const u32 input) noexcept;
 
-    operator bool() const;
-    bool operator!() const;
-    bool operator==(const uint24 &val) const;
-    bool operator!=(const uint24 &val) const;
-    bool operator>=(const uint24 &val) const;
-    bool operator<=(const uint24 &val) const;
-};
+    operator u32() const noexcept;
+    operator u16() const noexcept;
 
-class ui24
-{
-    std::bitset<24> m_value;
+    uint24 operator+(const uint24 &val) const noexcept;
+    uint24 operator-(const uint24 &val) const noexcept;
+    uint24 operator*(const uint24 &val) const noexcept;
+    uint24 operator/(const uint24 &val) const noexcept;
+    uint24 &operator+=(const uint24 &val) noexcept;
+    uint24 &operator-=(const uint24 &val) noexcept;
+    uint24 &operator*=(const uint24 &val) noexcept;
+    uint24 &operator/=(const uint24 &val) noexcept;
 
-public:
-    ui24() = default;
-    constexpr ui24(unsigned int value) noexcept : m_value { value }
-    {
-    }
-
-    operator uint32_t() const
-    {
-        //  constexpr std::uint32_t negative_mask = (0xff << 24);
-        return /*(m_value[23] ? negative_mask : 0) |*/ m_value.to_ulong();
-    }
+    operator bool() const noexcept;
+    bool operator!() const noexcept;
+    bool operator==(const uint24 &val) const noexcept;
+    bool operator!=(const uint24 &val) const noexcept;
+    bool operator>=(const uint24 &val) const noexcept;
+    bool operator<=(const uint24 &val) const noexcept;
 };
